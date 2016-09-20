@@ -21,8 +21,11 @@ def number_from_half(s : str):
 
     sign = int(sstr[0])
     exp = int(sstr[1:6],2)
-    frac = float("1." + str(int(sstr[6:],2)))
-    newnum = (-1)**sign * frac * 2.0**(exp-15)
+    frac = int(sstr[6:],2) 
+    if (exp == 0):
+        newnum = (-1)**sign * (frac/2**10) * 2.0**(exp-14)
+    else:      
+        newnum = (-1)**sign * (1+frac/2**10) * 2.0**(exp-15)
     
     return newnum
 
@@ -36,7 +39,7 @@ def main():
     while True:
         try:
             
-            myinput = input("Enter hex number (exit to exit): ")
+            myinput = input()
             #myinput = f.readline()
             sum = sum + number_from_half(myinput)
         except ValueError:
