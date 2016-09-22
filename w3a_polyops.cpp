@@ -35,7 +35,6 @@ Poly add_poly(const Poly &a,const Poly &b)
     
     for (int i = 0; i < funca.size(); i++) {
         sum[i] = funca[i] + funcb[i];
-        cout << sum[i] << " ";
     }
     
     return sum;
@@ -45,32 +44,48 @@ Poly add_poly(const Poly &a,const Poly &b)
 Poly multiply_poly(const Poly &a,const Poly &b)
 {
     Poly sum(a.size()+b.size()-1);
+    int place = 0;
     for (int i = a.size() - 1; i >= 0; i--)
     {
-        
-        
+        Poly temp(b.size());
         for (int j = 0; j < b.size(); j++)
         {
-            a[i] * b[j]
+            temp[j] = a[i] * b[j];
         }
+        for (int k = 0; k < place; k++)
+        {
+            temp.push_back(0);
+        }
+        
+        sum = add_poly(sum,temp);
+        
+        place++;
     }
-    
-    
+    return sum;
 }
 
-
-
-
+/*
 int main() {
+    
     Poly ina;
     Poly inb;
-    // cout << "Polynomial A: ";
-    // cin >> A
-    // cout << "Polynomial B: ";
-    // cin >> B
+    Poly add;
+    Poly mult;
     ina = {3,4,5,6,7};
     inb = {2,5,1};
-    add_poly(ina, inb);
+    add = add_poly(ina, inb);
+    mult = multiply_poly(ina, inb);
     
+    for (int i = 0; i < add.size(); i++)
+    {
+        cout << add[i] << " ";
+    }
+    cout << "\n";
+    for (int i = 0; i < mult.size(); i++)
+    {
+        cout << mult[i] << " ";
+    }
+ 
     return 0;
 }
+*/
