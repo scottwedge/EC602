@@ -1,10 +1,3 @@
-//
-//  main.cpp
-//  w3a_bigint.cpp
-//
-// AUTHOR John Keisling jfkeis@bu.edu
-// AUTHOR Sigurdur Thorvaldsson sigurdur@bu.edu
-//
 
 #include <iostream>
 #include <vector>
@@ -37,8 +30,31 @@ Poly add_poly(const Poly &a,const Poly &b)
     // intialize sum vector
     Poly sum(funca.size());
     
-    for (int i = 0; i < funca.size(); i++) {
-        sum[i] = funca[i] + funcb[i];
+    int carry = 0;
+    
+    for (int i = (int)funca.size()-1; i >= 0; i--) {
+        
+        sum[i] =  funca[i] + funcb[i] + carry;
+        
+        string tempstr = to_string(sum[i]);
+        if (tempstr.size() > 1)
+        {
+            sum[i] = (int)tempstr.at(1)-48;
+            carry = (int)tempstr.at(0)-48;
+        
+        }
+        else
+        {
+            carry = 0;
+        }
+        
+
+        if (carry != 0 and i == 0)
+        {
+            sum.insert(sum.begin(),carry);
+        }
+        
+        
     }
     
     return sum;
@@ -62,6 +78,12 @@ Poly multiply_poly(const Poly &a,const Poly &b)
         }
         
         sum = add_poly(sum,temp);
+        
+        //for(int i = 0; i < sum.size(); i++)
+        //{
+        //    cout << sum[i] << " ";
+        //}
+        //cout << "\n";
         
         place++;
     }
@@ -93,7 +115,7 @@ BigInt multiply_int(const BigInt &a,const BigInt &b)
     return product;
 }
 
-
+/*
 
 int main()
 {
@@ -101,10 +123,11 @@ int main()
     BigInt A,B;
     
     //cin >> A >> B;
-    A = "111111";
-    B = "1111111";
+    A = "11111";
+    B = "11111";
     
     
     cout << multiply_int(A,B) << endl;
     
 }
+ */
