@@ -1,2 +1,2 @@
 # EC602
-hw shit
+hw s***
