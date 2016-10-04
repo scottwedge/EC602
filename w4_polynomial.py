@@ -38,9 +38,10 @@ class Polynomial():
     def __str__(self):
         res = ""        
         for i in reversed(sorted(self.exponents())):
-            if len(res) > 0:
-                res = res + " + "
-            res = res + str(self[i]) + "x^" + str(i)
+            if(self[i]!=0):
+                if len(res) > 0:
+                    res = res + " + "
+                res = res + str(self[i]) + "x^" + str(i)
             
         return res
             
@@ -101,32 +102,39 @@ class Polynomial():
                 except KeyError:
                     result[newexp] = newcoef
         return result
-"""
-    def __eq__(a,b):
+
+    def __eq__(self,a):
         "Return if a == b"
-        if len(a) != len(b):
-            Return False
+        if len(self.coef) != len(a.coef):
+            return False
         
-        for i in len(b):
-            if a[i] != b[i]:
-                Return False
+        for i in self.coef:
+            if self[i] != a[i]:
+                return False
         
-        Return True
-        
-    def eval(a):
-        len(self) = length
-        for i in len(self):
-            newpoly[i] = self[i] * a ** length - 1
+        return True
+
+    def deriv(self):
+            newpoly = Polynomial([])
+            #length = len(self.coef)
+            for i in self.coef:
+                try:
+                    newpoly[i-1] = self[i]*(i)
+                except KeyError:
+                    newpoly[i-1] = self[i]*(i)
+                
+            return newpoly
+            
+"""       
+    def eval(self):
+        newpoly = Polynomial([])
+        length = len(self.coef)
+        for i in self.coef:
+            newpoly[i] = self[i] * x ** length - 1
             length -= length
-        
-    def deriv():
-        len(self) = length
-        for i in len(self):
-            newpoly[i] = self[i] * length - 1
-            length -= length
-"""
-   
-        
+        return newpoly
+    
+"""      
     
         
 def main():
@@ -140,9 +148,13 @@ def main():
     p3 = p1 + p2
     p4 = p1 - p2
     p5 = p1 * p2
+    p6 = Polynomial([1,2,3])
+    p7 = Polynomial([1,2,3])
     print(p3)
     print(p4)
     print(p5)
+    print(p6 == p7)
+    print(p1.deriv())
 
 if __name__ == '__main__':
     main()
