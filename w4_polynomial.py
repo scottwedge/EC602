@@ -8,9 +8,6 @@ w4_polynomial.py
 Siggi&John
 """
 # -*- coding: utf-8 -*-
-"""
-Provides the class Complex() to mimic the built-in complex class.
-"""
 
 class Polynomial():
 
@@ -25,12 +22,19 @@ class Polynomial():
     
     def exponents(self):
         return self.coef.keys()
+    
+    #def coeffs(self):
+    #    return self.coef.values()
         
     def __getitem__(self,key):
-        return self.coef[key]        
+        try:
+            return self.coef[key]
+        except KeyError:
+            return 0       
         
-    def __setitem__(self,key, newcoef):
-        self.coef[key] = newcoef
+    def __setitem__(self, key, newcoef):
+           self.coef[key] = newcoef
+            
         
     def __delitem__(self,key):
         del self.coef[key]
@@ -44,13 +48,16 @@ class Polynomial():
                 res = res + str(self[i]) + "x^" + str(i)
             
         return res
+        
+    #def __neg__(self):
+    #    return Polynomial({k: -v for k,v in self.exponents()})
             
-
     def __add__(self,a):
-        "Add a+b"
+        "Add self+a"
+        psum = Polynomial([])
         psum = self
         for k in a.exponents():
-            if k in psum.exponents():
+            if k in self.exponents():
                 psum[k] += a[k]
             else:
                 psum[k] = a[k]
@@ -58,40 +65,42 @@ class Polynomial():
         return psum
     
     def __sub__(self,a):
-        "Subtract a-b"
+        "Subtract self-a"
+        psum = Polynomial([])
         psum = self
         for k in a.exponents():
-            if k in psum.exponents():
-                psum[k] +=  -1 * a[k]
+            if k in self.exponents():
+                psum[k] = self.coef[k] - a[k]
             else:
-                psum[k] = a[k]
+                psum[k] = - a[k]
                 
         return psum
 
     def __radd__(self,a):
         "Add a+self"
-        psum = self
-        for k in a.exponents():
-            if k in psum.exponents():
-                psum[k] += a[k]
+        psum = Polynomial([])        
+        psum = a
+        for k in self.exponents():
+            if k in a.exponents():
+                psum[k] += self[k]
             else:
-                psum[k] = a[k]
+                psum[k] = self[k]
                 
         return psum
 
     def __rsub__(self,a):
-        "Subtract b-self"
-        psum = self
-        for k in a.exponents():
-            if k in psum.exponents():
-                psum[k] += -1 * a[k]
+        "Subtract a-self"
+        psum = a
+        for k in self.exponents():
+            if k in a.exponents():
+                psum[k] = a.coef[k] - self[k]
             else:
-                psum[k] = a[k]
+                psum[k] =  - self[k]
                 
         return psum
 
     def __mul__(self,a):
-        "Return self*a."
+        "Return self*a"
         result = Polynomial([])
         for exp1 in self.exponents():
             for exp2 in a.exponents():
@@ -124,37 +133,37 @@ class Polynomial():
                     newpoly[i-1] = self[i]*(i)
                 
             return newpoly
-            
-"""       
-    def eval(self):
-        newpoly = Polynomial([])
-        length = len(self.coef)
-        for i in self.coef:
-            newpoly[i] = self[i] * x ** length - 1
-            length -= length
-        return newpoly
+                 
+    def eval(self,x):
+        value = 0.0
+        for i in reversed(sorted(self.exponents())):
+            value += self[i] * x ** i
+        return value
     
-"""      
-    
-        
-def main():
+       
+def main():    
     p1 = Polynomial([1,2,3,0,5])
     print(p1)
+    print(p1.deriv())
+    """
+    #print(p1)
+    #print(-p1[3])
     p1[3] = 3.1
     p1[8] = 7
     print(p1)
     p2 = Polynomial([1,1,2])
     print(p2)
-    p3 = p1 + p2
+    #p3 = p1 + p2
+    #print(p3)
     p4 = p1 - p2
+    print(p4)
+    #print(p3.eval(3))
     p5 = p1 * p2
+    print(p5)
     p6 = Polynomial([1,2,3])
     p7 = Polynomial([1,2,3])
-    print(p3)
-    print(p4)
-    print(p5)
     print(p6 == p7)
     print(p1.deriv())
-
+"""
 if __name__ == '__main__':
     main()
