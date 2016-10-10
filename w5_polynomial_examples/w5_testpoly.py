@@ -27,13 +27,13 @@ class PolynomialTestCase(unittest.TestCase):
       
     def test_add(self):
         p1 = Polynomial([1,2,3,0,5])
-        p2 = Polynomial([1,2,2])
-        self.assertEqual(p1+p2, Polynomial([1,2,4,2,7]))
+        p2 = Polynomial([1,2,-2])
+        self.assertEqual(p1+p2, Polynomial([1,2,4,2,3]))
 
     def test_radd(self):
         p1 = Polynomial([1,2,3,0,5])
-        p2 = Polynomial([1,2,2])
-        self.assertEqual(p2+p1, Polynomial([1,2,4,2,7]))
+        p2 = Polynomial([1,2,-2])
+        self.assertEqual(p2+p1, Polynomial([1,2,4,2,3]))
 
     def test_sub(self):
         p1 = Polynomial([1,2,3,0,5])
@@ -75,16 +75,19 @@ class PolynomialTestCase(unittest.TestCase):
         self.assertLess(factor_increase,10,msg='Implementation not sparse, init with {} zeros'.format(n))
     
 """
-    
+    def test_getitem(self):
+        p1 = Polynomial([1,2,3,0,5])
+        self.assertEqual(p1[2], 3)
         
     def test_rmult(self):
         p5 = Polynomial([1,2,3,0,5])
         p6 = Polynomial([1,2,2])        
         self.assertEqual(p6*p5, Polynomial([1,3,7,7,11,5,10]))
-    
+
     def test_eval(self):
-        p9 = Polynomial([1,2,3])
-        self.asssertEqual(p9.eval(3),18)     
+        p99 = Polynomial([1,1,1])
+        self.asssertEqual(p99.eval(3), 13) 
+   
         
     def test_eval(self):
         p9 = Polynomial([1,2,3])
