@@ -2,6 +2,10 @@
 """
 # AUTHOR John Keisling jfkeis@bu.edu
 # AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
+<<<<<<< HEAD
+=======
+
+>>>>>>> 318940eb26d0d40c9eeea05e1574534f9d78e415
 w5_testpoly.py
 10/2/16
 Siggi&John
@@ -62,6 +66,7 @@ class PolynomialTestCase(unittest.TestCase):
         p14 = Polynomial([])
         p14[-3] = 3
         self.assertEqual(p13,p14)
+<<<<<<< HEAD
 
     def test_sparse_zeros(self):
         n = 10000
@@ -75,6 +80,13 @@ class PolynomialTestCase(unittest.TestCase):
         self.assertLess(factor_increase,10,msg='Implementation not sparse, init with {} zeros'.format(n))
     
 """
+=======
+    
+    
+    
+        """
+
+>>>>>>> 318940eb26d0d40c9eeea05e1574534f9d78e415
     
         
     def test_rmult(self):
@@ -89,10 +101,21 @@ class PolynomialTestCase(unittest.TestCase):
     def test_eval(self):
         p9 = Polynomial([1,2,3])
         self.asssertEqual(p9.eval(3),18) 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 318940eb26d0d40c9eeea05e1574534f9d78e415
     def test_mult(self):
         p5 = Polynomial([1,2,3, 0, 5])
         p6 = Polynomial([3,0,2])        
         self.assertEqual(p5*p6, Polynomial([3,6,12,6,24,15]))
     
     
+<<<<<<< HEAD
  """ 
+=======
+ """       
+    
+        
+    
+>>>>>>> 318940eb26d0d40c9eeea05e1574534f9d78e415
