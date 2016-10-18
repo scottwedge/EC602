@@ -7,10 +7,7 @@ w6_dft.py
 10/17/16
 Siggi&John
 """
-#import numpy as np
 from numpy import zeros,exp,array,pi
-
-#array(object, dtype=complex)
 
 def DFT(x):
         
@@ -28,12 +25,12 @@ def DFT(x):
     #print(FT) 
     return FT
 
-def main():
+#def main():
     #DFT((1, 4, 1+1j, 3-2j, 4-6j))
     #DFT((1,2,3,'a'))
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
 
 ### Recreate input signal from DFT results and compare to input signal
 ##fnList2 = InverseDFT(FmList)
