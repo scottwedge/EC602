@@ -39,76 +39,22 @@ def wavplay(fname):
     music,frame_rate,nframes,nchannels = read_wave(fname)
     time.sleep(nframes/frame_rate)
 
-def dialer(file_name,frame_rate,phone,tone_time):
+def loudest_band(music,frame_rate,bandwidth):
     #generate two tone signal
 
-    output=[]    
+    w = np.fft.fft(music)
+    freqs = np.fft.fftfreq(len(music))  
+    fs = frame_rate
+    hz = abs(freqs * frame_rate)
+    duration = tone_time
     
-    for n in phone:
-        if(n=="0"):
-            f1 = 941
-            f2 = 1336
-        elif(n=="1"):
-            f1 = 697
-            f2 = 1209
-        elif(n=="2"):
-            f1 = 697
-            f2 = 1336
-        elif(n=="3"):
-            f1 = 697
-            f2 = 1477
-        elif(n=="4"):
-            f1 = 770
-            f2 = 1209
-        elif(n=="5"):
-            f1 = 770
-            f2 = 1336
-        elif(n=="6"):
-            f1 = 770
-            f2 = 1477
-        elif(n=="7"):
-            f1 = 852
-            f2 = 1209
-        elif(n=="8"):
-            f1 = 852
-            f2 = 1336
-        elif(n=="9"):
-            f1 = 852
-            f2 = 1477
-        elif(n=="A"):
-            f1 = 697
-            f2 = 1633
-        elif(n=="B"):
-            f1 = 770
-            f2 = 1633
-        elif(n=="C"):
-            f1 = 852
-            f2 = 1633
-        elif(n=="D"):
-            f1 = 941
-            f2 = 1633
-        elif(n=="*"):
-            f1 = 941
-            f2 = 1209
-        elif(n=="#"):
-            f1 = 941
-            f2 = 1477
-        else:
-            f1 = 0
-            f2 = 0
-            
-        fs = frame_rate
-        duration = tone_time
-        x1 = (np.sin(2*np.pi*np.arange(fs*duration)*f1/fs)).astype(np.float32)
-        x2 = (np.sin(2*np.pi*np.arange(fs*duration)*f2/fs)).astype(np.float32)
-        x = x1 + x2
-        output = np.concatenate([output,x])
+    
         
     #output = np.array(output)
     wavfile.write(file_name, frame_rate, output)  
     wavplay(file_name)
 
-dialer("test1",8000,"123456789",0.5)
+    #fiter out loudest band
       
 """
 fname = "bach10sec.wav"
