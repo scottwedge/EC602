@@ -31,15 +31,23 @@ class DFTTestCase(unittest.TestCase):
 
     def test_fft(self):
         for N in range(2,21):
-            x = []
+            x = [0]*N
             for i in range(0, 10):
-                for j in range(0,N+1):
-                    x1 = (np.random.random()*2)-1
-                    i1 = (np.random.random()*2)-1
-                    n1 = complex(x1,i1)
-                    x = x.append(n1)
-                DFTfft = DFT(x)
-                z = np.asarray(x, dtype=complex)
-                numpfft = np.fft.fft(z)
-                for k in range(0,N):
-                    self.assertAlmostEqual(numpfft[k],DFTfft[k])
+                for j in range(0,N):
+                    x1 = (2*np.random.random())-1
+                    i1 = (2*np.random.random())-1
+                    x[j] = complex(x1,i1)
+                    DFTfft = DFT(x)
+                    z = np.asarray(x, dtype=complex)
+                    numpfft = np.fft.fft(z)
+                    for k in range(0,N):
+                        self.assertAlmostEqual(numpfft[k],DFTfft[k])
+
+    def test_input(self):
+        self.assertRaises(ValueError,DFT,'soccer')
+    
+    def test_explicit(self):
+        try:
+            DFT(bytearray([1,4]))
+        except:
+            self.fail('foo')
