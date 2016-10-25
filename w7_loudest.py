@@ -46,15 +46,17 @@ def loudest_band(music,frame_rate,bandwidth):
     freqs = np.fft.fftfreq(len(music))  
     fs = frame_rate
     hz = abs(freqs * frame_rate)
-    duration = tone_time
     
+    maxi = np.argmax(np.abs(w))
+    loudest = hz[maxi]
+    low = hz[maxi - bandwidth/2]
+    high = hz[maxi - bandwidth/2]
+    output = (low, high, loudest)    
     
-        
-    #output = np.array(output)
-    wavfile.write(file_name, frame_rate, output)  
+    wavfile.write('bachFiltered.wav',frame_rate, loudest.real/1000)
     wavplay(file_name)
 
-    #fiter out loudest band
+    return output
       
 """
 fname = "bach10sec.wav"
