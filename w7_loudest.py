@@ -16,11 +16,11 @@ Siggi&John
 
 # WAV file support
 import scipy.io.wavfile as wavfile
-import PyQt4.QtGui as qt
+#import PyQt4.QtGui as qt
 import time
 import numpy as np
-import matplotlib.pyplot as pyplot
-import math
+#import matplotlib.pyplot as pyplot
+#import math
 
 def read_wave(fname,debug=False):
     "return information about and time signal in the WAV file fname"
@@ -33,58 +33,60 @@ def read_wave(fname,debug=False):
         nchannels = 1
         nframes = music.shape[0]    
     return music,frame_rate,nframes,nchannels
-
+"""
 def wavplay(fname):
     "play a sound, and sleep until it is finished"
     qt.QSound.play(fname)
     music,frame_rate,nframes,nchannels = read_wave(fname)
     time.sleep(nframes/frame_rate)
+"""
 
 def loudest_band(music,frame_rate,bandwidth):
     
-    #mus,fs,nframes,nchannels = read_wave(music)
-
-    w = np.fft.fft(mus)
-    wShift = np.fft.fftshift(w)    
+    #scale bandwidth
+    band = int(bandwidth/(frame_rate/len(music)))
     
+    #calc fft
+    firstfft = np.fft.fft(music)
+    w = np.fft.fftshift(firstfft)    
     zer = np.arange(-frame_rate/2,frame_rate,frame_rate/len(music))
-    zero = abs(zer)    
+    zero = abs(zer).argmin()
     
+    musicfft = w[zero:]    
     
-    freqs = np.fft.fftfreq(len(mus))  
-    fs = frame_rate
-    hz = abs(freqs * fs)
+    #get signal power
+    sigpwr = abs(musicfft)**2
     
-    #maxi = np.argmax(np.abs(w))
-    fftData=abs(freqs)**2
-    # find the maximum
-    maxi = fftData[1:].argmax() + 1
-    loudest = hz[maxi]
-    low = hz[maxi - math.floor(bandwidth/2)]
-    high = hz[maxi + math.floor(bandwidth/2)]
-    output = (low, high, loudest)    
+    lo = []
+    hi = []
+    pwr = []    
     
-    pyplot.plot(fftData)
-    pyplot.show()    
-    #wavfile.write('bachFiltered.wav',frame_rate, loudest.real/1000)
+    for i in range(len(musicfft)-band):
+        pwr += [sum(sigpwr[i:i+band-1])]
+        lo += [i]
+        hi += [i+band]
+    
+    #get max
+    maxi = np.argmax(pwr)
+    if(maxi!= 0):
+        bp1 = np.append(np.ones(bandwidth+1),np.zeros(maxi-1))
+        bpneg = np.append(np.zeros(zero - bandwidth - maxi), bp1)
 
-    return output
-      
-fname = "bach10sec.wav"
+        bp2 = np.append(np.zeros(maxi-1),np.ones(bandwidth+1))
+        bppos = np.append(bp2,np.zeros(zero-bandwidth-maxi))
+    else:
+        bpneg = np.append(np.zeros(zero - bandwidth - maxi),np.ones(bandwidth))
+        bppos = np.append(np.ones(bandwidth),np.zeros(zero - bandwidth - maxi))
+    
+    final = np.append(bpneg,bppos)
+    print(final)
+    
+    filtered = w*final
+    time = np.fft.ifft(np.fft.ifftshift(filtered))
+    
+    result = (lo[maxi]*(frame_rate/len(music)),hi[maxi]*(frame_rate/len(music)),time.real)      
+    
+    return result
 
-l, h, lds = loudest_band(fname,8000,10)
-print(l,h,lds)
 
-# Plot the sound
-music,frame_rate,nframes,nchannels = read_wave(fname,debug=True)
-if nchannels > 1:
-    music = music.sum(axis=1)
-
-pyplot.plot(music)
-pyplot.show()
-
-
-
-# Listen to the sound
-#wavplay('bach10sec.wav')
-#wavplay('scary.wav')
+    
