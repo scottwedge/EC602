@@ -17,7 +17,6 @@ Siggi&John
 # WAV file support
 import scipy.io.wavfile as wavfile
 #import PyQt4.QtGui as qt
-import time
 import numpy as np
 #import matplotlib.pyplot as pyplot
 
@@ -39,7 +38,7 @@ def wavplay(fname):
     qt.QSound.play(fname)
     music,frame_rate,nframes,nchannels = read_wave(fname)
     time.sleep(nframes/frame_rate)
-"""
+    """
 
 def dialer(file_name,frame_rate,phone,tone_time):
     #generate two tone signal
@@ -51,7 +50,7 @@ def dialer(file_name,frame_rate,phone,tone_time):
             f1 = 941.0
             f2 = 1336.0
         elif(n=="1"):
-            f1 = 697.
+            f1 = 697.0
             f2 = 1209.0
         elif(n=="2"):
             f1 = 697.0
@@ -99,22 +98,26 @@ def dialer(file_name,frame_rate,phone,tone_time):
             f1 = 0.0
             f2 = 0.0
             
-        fs = frame_rate
-        duration = tone_time
-        period1 = int(frame_rate/f1)
-        period2 = int(frame_rate/f2)
-        x1 = (np.sin(2*np.pi*np.arange(fs*duration)*f1/fs)).astype(np.float32)
-        x2 = (np.sin(2*np.pi*np.arange(fs*duration)*f2/fs)).astype(np.float32)
+        fs = frame_rate #samples per second
+        per = np.linspace(0,tone_time, tone_time*fs)
+        x1 = np.sin(2*np.pi*f1*per)
+        x2 = np.sin(2*np.pi*f2*per)
         x = x1 + x2
         output = np.concatenate([output,x])
         
     output = np.array(output)
     wavfile.write(file_name, frame_rate, output)  
+    #pyplot.plot(output)
+    #pyplot.show()
     #wavplay(file_name)
 
+<<<<<<< HEAD
 
 #dialer("test1",8000,"123456789",0.5)
 dialer("test2",800,"1",0.1)
+=======
+#dialer("test1",8000,"1",0.01)
+>>>>>>> ede2cc5a09446eaaf4f9ac82a2aeddd0f7d19e71
       
 
 #fname = "bach10sec.wav"
