@@ -112,10 +112,13 @@ def dialer(file_name,frame_rate,phone,tone_time):
     wavfile.write(file_name, frame_rate, output)  
     #wavplay(file_name)
 
+
 #dialer("test1",8000,"123456789",0.5)
+dialer("test2",800,"1",0.1)
       
-"""
-fname = "bach10sec.wav"
+
+#fname = "bach10sec.wav"
+fname = "test2"
 
 # Plot the sound
 music,frame_rate,nframes,nchannels = read_wave(fname,debug=True)
@@ -125,7 +128,7 @@ if nchannels > 1:
 pyplot.plot(music)
 pyplot.show()
 
+
 # Listen to the sound
-wavplay('bach10sec.wav')
-wavplay('scary.wav')
-"""
+#wavplay('bach10sec.wav')
+#wavplay('scary.wav')
