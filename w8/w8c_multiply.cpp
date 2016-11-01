@@ -10,23 +10,21 @@ int main(int argc, char const *argv[])
 
 	ifstream thisfile; // note: this is an IFSTREAM, "I" stands for INPUT
 
-	int one,two;
+	int one,two,three,four;
 	vector<int> squares;       
     
 
-	thisfile.open("argv[1]");
+	thisfile.open("file1.txt");
 
-	while (thisfile >> one >> two)
+	while (thisfile >> one >> two >> three >> four)
 	{ 
-		cout << one << " " << two << endl;
-		squares.push_back(two);
+		cout << one << " " << two << " " << three << " " << four << endl;
+		//squares.push_back(two);
     }
 
     thisfile.close(); 
 
-    for (auto s: squares){
-    	cout << s << endl;
-    }
+    cout << argv[1];
 
 	// ofstream filewithmatrix3;
 
