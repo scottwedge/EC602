@@ -111,10 +111,17 @@ def dialer(file_name,frame_rate,phone,tone_time):
     #pyplot.show()
     #wavplay(file_name)
 
+<<<<<<< HEAD
+
+#dialer("test1",8000,"123456789",0.5)
+dialer("test2",800,"1",0.1)
+=======
 #dialer("test1",8000,"1",0.01)
+>>>>>>> ede2cc5a09446eaaf4f9ac82a2aeddd0f7d19e71
       
-"""
-fname = "bach10sec.wav"
+
+#fname = "bach10sec.wav"
+fname = "test2"
 
 # Plot the sound
 music,frame_rate,nframes,nchannels = read_wave(fname,debug=True)
@@ -124,7 +131,7 @@ if nchannels > 1:
 pyplot.plot(music)
 pyplot.show()
 
+
 # Listen to the sound
-wavplay('bach10sec.wav')
-wavplay('scary.wav')
-"""
+#wavplay('bach10sec.wav')
+#wavplay('scary.wav')
