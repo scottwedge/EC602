@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 using namespace std;
 
 //w8c_multiply dtype M N L file1 file2 file3
@@ -44,90 +45,84 @@ T multMatI(int i, int j, T mat1, T mat2) {
     return mat3;
 }
 
- int main(){
-     
-     string line;
-     ofstream myfile1;
-     ofstream myfile2;
-     ifstream myRfile1;
-     ifstream myRfile2;
-     myfile1.open ("xtest3.txt");
-     myfile2.open ("xtest4.txt");
-     myRfile1.open("xtest1.txt");
-     myRfile2.open("xtest2.txt");
+ int main(int argc, char *argv[]){
      
      /*
-     freopen("xtest1.txt", "rb", stdin);
-     while(getline(cin, line)){
-         myfile1 << line << endl;
-         cout << line << endl;
+     for(int i=0; i<argc; i++){
+         if(argc != 6 || argc != 8){
+             return 1;
+         }
+         //if(argv[i]
      }
-     myfile1.close();
-     */
+      */
+     
+     ifstream file1, file2;
+     ofstream file3;
+     //file1.open(argv[1]);
+     //file2.open(argv[2]);
+     //file3.open(argv[3]);
+     file1.open("xtest1.txt");
+     file2.open("xtest2.txt");
+     file3.open("xtest3.txt");
+     int m = 3;
+     int n = 4;
+     int l = 3;
      
      
      vector<vector<int>> data1;
      vector<vector<int>> data2;
      
-     /*
-     int M = int(data1.size());
-     int N = int(data1[0].size());
-     int L = int(data2.size());
-     
-     cout << M;
-     */
-     
      //while (!myRfile1.eof()) {
-         for(int i = 0; i < 3; i++){  //row
+         for(int i = 0; i < m; i++){  //row
              vector<int> tmpVec;
              int tmpString;
              
-             for (int j = 0; j < 4; j++){  //col
-                 myRfile1  >> tmpString;
-                 myfile1 << tmpString << " ";
+             for (int j = 0; j < n; j++){  //col
+                 file1  >> tmpString;
+                 //myfile1 << tmpString << " ";
                  tmpVec.push_back(tmpString);
              }
              data1.push_back(tmpVec);
-             myfile1 << endl;
+             //myfile1 << endl;
          }
      //}
-     myfile1.close();
+     file1.close();
      
      //while (!myRfile2.eof()) {
-         for(int i = 0; i < 4; i++){ //row
+         for(int i = 0; i < n; i++){ //row
              vector<int> tmpVec;
              int tmpString;
              
-             for (int j = 0; j < 3; j++){  //col
-                 myRfile2  >> tmpString;
-                 myfile2 << tmpString << " ";
+             for (int j = 0; j < l; j++){  //col
+                 file2  >> tmpString;
+                 //myfile2 << tmpString << " ";
                  tmpVec.push_back(tmpString);
              }
              data2.push_back(tmpVec);
-             myfile2 << endl;
+             //myfile2 << endl;
          }
      //}
-     myfile2.close();
+     file2.close();
      
-     int rows = int(data1.size());
-     int cols = int(data2[0].size());
-     cout << rows << "\n";
-     cout << cols << "\n";
-     multMatI(4, cols, data1, data2);
+     int M = int(data1.size());
+     //int N = int(data1[0].size());
+     int L = int(data2[0].size());
+
+     vector<vector<int>> result = multMatI(M+1, L, data1, data2);
      
+     for(int i = 0; i < M; i++){ //row
+         vector<int> tmpVec;
+         for (int j = 0; j < L; j++){  //col
+             file3 << result[i][j] << " ";
+         }
+         file3 << endl;
+     }
+     cout << "got here";
+     file3.close();
+     cout << "and here ";
      
-     
-     cout << data1[2][3] << "\n";
-     cout << data2[3][2] << "\n";
- 
-     
-     cout << "fin";
+     //cout << "fin ";
      return 0;
  }
 
-/*
- main(int argc, char *argv[])
- file1.open(argv[1])
- file2.open(argv[2])
- */
-
+//exit(1)
