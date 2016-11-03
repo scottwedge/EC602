@@ -3,6 +3,7 @@
  // AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
  //
  // w8c_muliply.cpp
+ // g++ -std=c++14 -O2 ./output2 source.cpp
  
 #include <iostream>
 #include <fstream>
@@ -29,8 +30,9 @@ void multMatD(int i, int j, vector<vector<double>> mat1, vector<vector<double>> 
 template <typename T>
 T multMatI(int i, int j, T mat1, T mat2) {
     
-    T mat3;
-    for (int r = 0; r < i; r++) {
+    vector<int> v(i, 0);
+    vector<vector<int> > mat3(j,v);
+    for (int r = 0; r < i-1; r++) {  //added -1 to fix
         for (int c = 0; c < j; c++) {
             for (int in = 0; in < i; in++) {
                 mat3[r][c] += mat1[r][in] * mat2[in][c];
@@ -107,17 +109,25 @@ T multMatI(int i, int j, T mat1, T mat2) {
      //}
      myfile2.close();
      
-     int rows = int(data2.size());
-     int cols = int(data1[0].size());
-     multMatI(rows-1, cols-1, data1, data2);
+     int rows = int(data1.size());
+     int cols = int(data2[0].size());
+     cout << rows << "\n";
+     cout << cols << "\n";
+     multMatI(4, cols, data1, data2);
      
      
      
      cout << data1[2][3] << "\n";
      cout << data2[3][2] << "\n";
-     cout << rows << "\n";
-     cout << cols << "\n";
+ 
      
+     cout << "fin";
      return 0;
  }
+
+/*
+ main(int argc, char *argv[])
+ file1.open(argv[1])
+ file2.open(argv[2])
+ */
 
