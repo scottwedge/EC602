@@ -32,7 +32,7 @@ template <typename T>
 T multMatI(int i, int j, T mat1, T mat2) {
     
     vector<int> v(i, 0);
-    vector<vector<int> > mat3(j,v);
+    T mat3(j,v);
     for (int r = 0; r < i-1; r++) {  //added -1 to fix
         for (int c = 0; c < j; c++) {
             for (int in = 0; in < i; in++) {
@@ -58,19 +58,52 @@ T multMatI(int i, int j, T mat1, T mat2) {
      
      ifstream file1, file2;
      ofstream file3;
-     //file1.open(argv[1]);
-     //file2.open(argv[2]);
-     //file3.open(argv[3]);
+     if(argc==8){
+         //file1.open(argv[5]);
+         //file2.open(argv[6]);
+         //file3.open(argv[7]);
+         //m = argv[2];
+         //n = argv[3];
+         //l = argv[4];
+     }
+     else if(argc==6){
+         //file1.open(argv[3]);
+         //file2.open(argv[4]);
+         //file3.open(argv[5]);
+         //m = argv[2];
+     }
+     else{
+         // return code 1
+     }
+     
+     
+     
+     // dtype = argv[1]
+     
      file1.open("xtest1.txt");
      file2.open("xtest2.txt");
      file3.open("xtest3.txt");
+     //bool dtype = true;
+     
      int m = 3;
      int n = 4;
      int l = 3;
      
+     /*
+     if(dtype){
+        vector<vector<int>> data1;
+        vector<vector<int>> data2;
+        cout << "this  ";
+     }
+     else if (!dtype){
+         vector<vector<double>> data1;
+         vector<vector<double>> data2;
+     }
+      */
      
      vector<vector<int>> data1;
      vector<vector<int>> data2;
+
      
      //while (!myRfile1.eof()) {
          for(int i = 0; i < m; i++){  //row
@@ -88,6 +121,18 @@ T multMatI(int i, int j, T mat1, T mat2) {
      //}
      file1.close();
      
+     //zero vector 1
+     vector<int> z1(n, 0);
+     vector<vector<int>> zer1(m,z1);
+     cout << zer1.size() << "\n" << zer1[0].size() << "\n";
+     
+     //if all zero then file does not exist
+     if(data1 == zer1)
+     {
+         return 3;
+     }
+     
+     
      //while (!myRfile2.eof()) {
          for(int i = 0; i < n; i++){ //row
              vector<int> tmpVec;
@@ -104,11 +149,39 @@ T multMatI(int i, int j, T mat1, T mat2) {
      //}
      file2.close();
      
+     //zero vector 2
+     vector<int> z2(l, 0);
+     vector<vector<int>> zer2(n,z2);
+
+     for (int r = 0; r < n; r++) {  //added -1 to fix
+         for (int c = 0; c < l; c++) {
+             cout << zer2[r][c] << "-" << data2[r][c] << " ";
+         }
+         cout << "\n";
+     }
+
+     //if all zero then file does not exist    //note this one does not really work because instead of the nonexistent one being all zeros, it instead is all 32767 for some reason
+     if(data2 == zer2)
+     {
+         return 3;
+     }
+     
+     
      int M = int(data1.size());
      //int N = int(data1[0].size());
      int L = int(data2[0].size());
-
+     
      vector<vector<int>> result = multMatI(M+1, L, data1, data2);
+     
+     //zero vector 3
+     vector<int> z3(M, 0);
+     vector<vector<int>> zer3(L,z3);
+     
+     // if last file cannot be created (this doesnt really work either)
+     if(result == zer3)
+     {
+         return 4;
+     }
      
      for(int i = 0; i < M; i++){ //row
          vector<int> tmpVec;
