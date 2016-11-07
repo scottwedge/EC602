@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+# AUTHOR John Keisling jfkeis@bu.edu
+# AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
+
+w8_tester
+11/7/16
+Siggi&John
+"""
+
+import time
+import subprocess
+import os
+import sys
+
+dtype = sys.argv[1]
+#Nlist = sys.argv[2]
+#Ntrials = sys.argv[3]
+
+############################ Python subprocess ############################
+startpy = time.time()
+
+T = subprocess.run(['python','w8p_multiply','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
+
+endpy = time.time()
+timepy = endpy - startpy
+
+print('py',' ',timepy)
+###########################################################################
+
+############################ C++ 01 subprocess ############################
+start01 = time.time()
+
+T01 = subprocess.run(['g++','-std=c++14','-O1','w8c_multiply.cpp','-o','w8c_multiply_1'],stdout=subprocess.PIPE)
+#T011 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
+
+end01 = time.time()
+time01 = end01 - start01
+
+print('01',' ',time01)
+###########################################################################
+
+# ############################ C++ 02 subprocess ############################
+start02 = time.time()
+
+T02 = subprocess.run(['g++','-std=c++14','-O2','w8c_multiply.cpp','-o','w8c_multiply_2'],stdout=subprocess.PIPE)
+
+end02 = time.time()
+time02 = end02 - start02
+
+print('02',' ',time02)
+###########################################################################
+
+############################ C++ 03 subprocess ############################
+start03 = time.time()
+
+T03 = subprocess.run(['g++','-std=c++14','-O3','w8c_multiply.cpp','-o','w8c_multiply_3'],stdout=subprocess.PIPE)
+
+end03 = time.time()
+time03 = end03 - start03
+
+print('03',' ',time03)
+###########################################################################
