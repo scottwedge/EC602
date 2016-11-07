@@ -33,7 +33,7 @@ print('py',' ',timepy)
 start01 = time.time()
 
 T01 = subprocess.run(['g++','-std=c++14','-O1','w8c_multiply.cpp','-o','w8c_multiply_1'],stdout=subprocess.PIPE)
-#T011 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
+T011 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
 
 end01 = time.time()
 time01 = end01 - start01
@@ -41,10 +41,11 @@ time01 = end01 - start01
 print('01',' ',time01)
 ###########################################################################
 
-# ############################ C++ 02 subprocess ############################
+############################ C++ 02 subprocess ############################
 start02 = time.time()
 
 T02 = subprocess.run(['g++','-std=c++14','-O2','w8c_multiply.cpp','-o','w8c_multiply_2'],stdout=subprocess.PIPE)
+T021 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
 
 end02 = time.time()
 time02 = end02 - start02
@@ -56,6 +57,7 @@ print('02',' ',time02)
 start03 = time.time()
 
 T03 = subprocess.run(['g++','-std=c++14','-O3','w8c_multiply.cpp','-o','w8c_multiply_3'],stdout=subprocess.PIPE)
+T031 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
 
 end03 = time.time()
 time03 = end03 - start03
