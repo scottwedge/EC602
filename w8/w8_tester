@@ -13,10 +13,18 @@ import time
 import subprocess
 import os
 import sys
+import numpy as np
 
 dtype = sys.argv[1]
-#Nlist = sys.argv[2]
+Nlist = sys.argv[2]
 #Ntrials = sys.argv[3]
+
+
+# Make random matrixes of sizes in Nlist
+# a = np.random.random_integers((Nlist,Nlist))
+# print(a)
+###########################################################################
+
 
 ############################ Python subprocess ############################
 startpy = time.time()
