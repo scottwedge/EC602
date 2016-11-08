@@ -1,5 +1,4 @@
-
- // AUTHOR johnkeisling jfkeis@bu.edu
+// AUTHOR johnkeisling jfkeis@bu.edu
  // AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
  //
  // w8c_muliply.cpp
@@ -12,6 +11,22 @@
 using namespace std;
 
 //w8c_multiply dtype M N L file1 file2 file3
+
+/*
+void multMatD(int i, int j, vector<vector<double>> mat1, vector<vector<double>> mat2) {
+    
+    vector<vector<double>> mat3;
+    for (int r = 0; r < i; r++) {
+        for (int c = 0; c < j; c++) {
+            for (int in = 0; in < i; in++) {
+                mat3[r][c] += mat1[r][in] * mat2[in][c];
+            }
+            cout << mat3[r][c] << "  ";
+        }
+        cout << "\n";
+    }
+}
+*/
 
 template <typename T>
 T multMatI(int i, int j, T mat1, T mat2) {
@@ -38,6 +53,14 @@ bool is_file_exist(const char *fileName)
 
 int main(int argc, char *argv[]){
      
+     /*
+     for(int i=0; i<argc; i++){
+         if(argc != 6 || argc != 8){
+             return 1;
+         }
+     }
+     */
+     
      int m;
      int n;
      int l;
@@ -45,7 +68,6 @@ int main(int argc, char *argv[]){
      ofstream file3;
      bool f1Check;
      bool f2Check;
-     bool f3Check;
 
      if(argc==8){
          file1.open(argv[5]);
@@ -70,16 +92,16 @@ int main(int argc, char *argv[]){
      }
      else{
          // if arguments invalid
-         return 1;
+         exit(1);
      }
      
     
      //check that files exist
      if(f1Check == false){
-         return 2;
+         exit(2);
      }
      if(f2Check == false){
-         return 2;
+         exit(2);
      }
      
      string dtype = argv[1];
@@ -123,7 +145,20 @@ int main(int argc, char *argv[]){
          }
      //}
      file1.close();
-    
+     
+     //zero vector 1
+     vector<double> z1(n, 0);
+     vector<vector<double>> zer1(m,z1);
+     //cout << zer1.size() << "\n" << zer1[0].size() << "\n";
+     
+     
+     //if all zero then file does not exist
+     if(data1 == zer1)
+     {
+         exit(3);
+     }
+     
+     
      //while (!myRfile2.eof()) {
          for(int i = 0; i < n; i++){ //row
              vector<double> tmpVec;
@@ -139,13 +174,24 @@ int main(int argc, char *argv[]){
          }
      //}
      file2.close();
-    
+     
+     //zero vector 2
+     vector<double> z2(l, 0);
+     vector<vector<double>> zer2(n,z2);
+
+     //if all zero then file does not exist    //note this one does not really work because instead of the nonexistent one being all zeros, it instead is all 32767 for some reason
+     if(data2 == zer2)
+     {
+         exit(3);
+     }
+     
+     
      int M = int(data1.size());
      int N = int(data1[0].size());
      int L = int(data2[0].size());
     
      if(m != M || n != N || l != L){
-         return 3;
+         exit(3);
      }
     
      vector<vector<double>> result = multMatI(M+1, L, data1, data2);
@@ -158,23 +204,25 @@ int main(int argc, char *argv[]){
              resultInt.emplace_back(elem.begin(), elem.end());
          }
      }
-    
-    // check to see if file is written
-    if(argc==8){
-        f3Check = is_file_exist(argv[7]);
-    }
-    else if(argc==6){
-        f3Check = is_file_exist(argv[5]);
-    }
-    
-    for(int i = 0; i < M; i++){ //row
+     
+     //zero vector 3
+     vector<double> z3(M, 0);
+     vector<vector<double>> zer3(L,z3);
+     
+     // if last file cannot be created (this doesnt really work either)
+     if(result == zer3)
+     {
+         exit(4);
+     }
+     
+     for(int i = 0; i < M; i++){ //row
          vector<double> tmpVec;
          for (int j = 0; j < L; j++){  //col
              file3 << result[i][j] << " ";
          }
          file3 << endl;
      }
-     file3.close();
+         file3.close();
      
      //cout << "fin ";
      return 0;
