@@ -14,61 +14,80 @@ import subprocess
 import os
 import sys
 import numpy as np
+uniform = np.random.uniform
+randint = np.random.randint
 
 dtype = sys.argv[1]
 Nlist = sys.argv[2]
-#Ntrials = sys.argv[3]
+Ntrials = int(sys.argv[3])
+
+Nlist = Nlist[1:9] #Cutting bracket of at beginning and end
+Nlist = Nlist.split(',') 
+
+for i in range(Ntrials):
+
+	# Make random matrixes of sizes in Nlist
+	A0 = randint(-10,10,(int(Nlist[0]),int(Nlist[0])))
+	B0 = randint(-10,10,(int(Nlist[0]),int(Nlist[0])))
+	np.savetxt('a0.txt',A0,fmt="%5.2f")
+	np.savetxt('b0.txt',B0,fmt="%5.2f")
+
+	A1 = randint(-10,10,(int(Nlist[1]),int(Nlist[1])))
+	B1 = randint(-10,10,(int(Nlist[1]),int(Nlist[1])))
+	np.savetxt('a1.txt',A1,fmt="%5.2f")
+	np.savetxt('b1.txt',B1,fmt="%5.2f")
+
+	A2 = randint(-10,10,(int(Nlist[2]),int(Nlist[2])))
+	B2 = randint(-10,10,(int(Nlist[2]),int(Nlist[2])))
+	np.savetxt('a2.txt',A2,fmt="%5.2f")
+	np.savetxt('b2.txt',B2,fmt="%5.2f")
+
+	###########################################################################
 
 
-# Make random matrixes of sizes in Nlist
-# a = np.random.random_integers((Nlist,Nlist))
-# print(a)
-###########################################################################
+	############################ Python subprocess ############################
+	startpy = time.time()
 
+	T = subprocess.run(['python','w8p_multiply','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
-############################ Python subprocess ############################
-startpy = time.time()
+	endpy = time.time()
+	timepy = endpy - startpy
 
-T = subprocess.run(['python','w8p_multiply','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
+	print('py',' ',timepy)
+	###########################################################################
 
-endpy = time.time()
-timepy = endpy - startpy
+	############################ C++ 01 subprocess ############################
+	start01 = time.time()
 
-print('py',' ',timepy)
-###########################################################################
+	T01 = subprocess.run(['g++','-std=c++14','-O1','w8c_multiply.cpp','-o','w8c_multiply_1'],stdout=subprocess.PIPE)
+	T011 = subprocess.run(['./w8c_multiply_1','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
-############################ C++ 01 subprocess ############################
-start01 = time.time()
+	end01 = time.time()
+	time01 = end01 - start01
 
-T01 = subprocess.run(['g++','-std=c++14','-O1','w8c_multiply.cpp','-o','w8c_multiply_1'],stdout=subprocess.PIPE)
-T011 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
+	print('01',' ',time01)
+	###########################################################################
 
-end01 = time.time()
-time01 = end01 - start01
+	############################ C++ 02 subprocess ############################
+	start02 = time.time()
 
-print('01',' ',time01)
-###########################################################################
+	T02 = subprocess.run(['g++','-std=c++14','-O2','w8c_multiply.cpp','-o','w8c_multiply_2'],stdout=subprocess.PIPE)
+	T021 = subprocess.run(['./w8c_multiply_1','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
-############################ C++ 02 subprocess ############################
-start02 = time.time()
+	end02 = time.time()
+	time02 = end02 - start02
 
-T02 = subprocess.run(['g++','-std=c++14','-O2','w8c_multiply.cpp','-o','w8c_multiply_2'],stdout=subprocess.PIPE)
-T021 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
+	print('02',' ',time02)
+	###########################################################################
 
-end02 = time.time()
-time02 = end02 - start02
+	############################ C++ 03 subprocess ############################
+	start03 = time.time()
 
-print('02',' ',time02)
-###########################################################################
+	T03 = subprocess.run(['g++','-std=c++14','-O3','w8c_multiply.cpp','-o','w8c_multiply_3'],stdout=subprocess.PIPE)
+	T031 = subprocess.run(['./w8c_multiply_1','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
-############################ C++ 03 subprocess ############################
-start03 = time.time()
+	end03 = time.time()
+	time03 = end03 - start03
 
-T03 = subprocess.run(['g++','-std=c++14','-O3','w8c_multiply.cpp','-o','w8c_multiply_3'],stdout=subprocess.PIPE)
-T031 = subprocess.run(['./w8c_multiply_1','dtype','4','3','4','file1.txt','file2.txt','file3.txt'],stdout=subprocess.PIPE)
-
-end03 = time.time()
-time03 = end03 - start03
-
-print('03',' ',time03)
-###########################################################################
+	print('03',' ',time03)
+	###########################################################################
