@@ -23,9 +23,9 @@ T multMatI(int i, int j, T mat1, T mat2) {
             for (int in = 0; in < i; in++) {
                 mat3[r][c] += mat1[r][in] * mat2[in][c];
             }
-            cout << mat3[r][c] << "  ";
+            //cout << mat3[r][c] << "  ";
         }
-        cout << "\n";
+        //cout << "\n";
     }
     return mat3;
 }
@@ -72,7 +72,10 @@ int main(int argc, char *argv[]){
          // if arguments invalid
          return 1;
      }
-     
+    
+    if(m <= 0 || n <=0 || l <= 0){
+        return 2;
+    }
     
      //check that files exist
      if(f1Check == false){
@@ -156,7 +159,7 @@ int main(int argc, char *argv[]){
      vector<vector<double>> resultInt;
      resultInt.reserve(result.size());
      
-     if(dtype == "int" || dtype == "integer")
+     if(dtype == "int")
      {
          for (const auto& elem : result) {
              resultInt.emplace_back(elem.begin(), elem.end());
@@ -171,14 +174,29 @@ int main(int argc, char *argv[]){
         f3Check = is_file_exist(argv[5]);
     }
     
-    for(int i = 0; i < M; i++){ //row
-         vector<double> tmpVec;
-         for (int j = 0; j < L; j++){  //col
-             file3 << result[i][j] << " ";
-         }
-         file3 << endl;
-     }
-     file3.close();
+    if(dtype == "int"){
+        for(int i = 0; i < M; i++){ //row
+            vector<int> tmpVec;
+            for (int j = 0; j < L; j++){  //col
+                file3 << resultInt[i][j] << " ";
+            }
+            file3 << endl;
+        }
+        file3.close();
+    }
+    else if(dtype == "double"){
+        for(int i = 0; i < M; i++){ //row
+            vector<double> tmpVec;
+            for (int j = 0; j < L; j++){  //col
+                file3 << (double)result[i][j] << " ";
+            }
+            file3 << endl;
+        }
+        file3.close();
+    }
+    else{
+        return 1;
+    }
      
      //cout << "fin ";
      return 0;
