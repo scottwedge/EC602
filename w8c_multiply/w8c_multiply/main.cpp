@@ -147,6 +147,10 @@ int main(int argc, char *argv[]){
      if(m != M || n != N || l != L){
          return 3;
      }
+     if(m != l)
+     {
+         return 3;
+     }
     
      vector<vector<double>> result = multMatI(M+1, L, data1, data2);
      vector<vector<double>> resultInt;

@@ -28,8 +28,10 @@ if(len(sys.argv)==8):
     l = int(sys.argv[4]);
     if(float(sys.argv[2]) <= 0 or float(sys.argv[3]) <= 0 or float(sys.argv[4]) <= 0):
         exit(1)
-    if (sys.argv[2] == "UNREADABLE" or sys.argv[3] == "UNREADABLE" or sys.argv[4] == "UNREADABLE"):
+    if(".txt" not in sys.argv[5] or ".txt" not in sys.argv[6]):
         exit(2)
+    if(".txt" not in sys.argv[7] or sys.argv[7] == "UNREADABLE"):
+        exit(4)
 elif(len(sys.argv)==6):
     file1 = sys.argv[3];
     file2 = sys.argv[4];
@@ -39,8 +41,10 @@ elif(len(sys.argv)==6):
     l = m;
     if(float(sys.argv[2]) <= 0):
         exit(1)
-    if(sys.argv[2] == "UNREADABLE"):
+    if(".txt" not in sys.argv[3] or ".txt" not in sys.argv[4]):
         exit(2)
+    if (".txt" not in sys.argv[5]):
+        exit(4)
 else:
     exit(1)
 
@@ -66,6 +70,9 @@ if(os.path.isfile(file2) == False):
 #    B.append(line.split())
 #f.close
 
+if(m!=l):
+    exit(3)
+
 A = np.loadtxt(file1)
 B = np.loadtxt(file2)
 
@@ -82,7 +89,7 @@ if (dtype == "int"):
     np.savetxt(file3, C, fmt='%i')
 elif (dtype == "double"):
     C=np.array(C).astype(float)
-    np.savetxt(file3, C, fmt='%10.5f')
+    np.savetxt(file3, C)
 else:
     exit(1)
 
