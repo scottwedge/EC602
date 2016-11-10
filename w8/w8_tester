@@ -25,7 +25,8 @@ Nlist = Nlist[1:9] #Cutting bracket of at beginning and end
 Nlist = Nlist.split(',') 
 
 for i in range(Ntrials):
-
+	N = Nlist[i]
+	print(N)
 	# Make random matrixes of sizes in Nlist
 	A0 = randint(-10,10,(int(Nlist[0]),int(Nlist[0])))
 	B0 = randint(-10,10,(int(Nlist[0]),int(Nlist[0])))
@@ -48,31 +49,35 @@ for i in range(Ntrials):
 	############################ Python subprocess ############################
 	startpy = time.time()
 
-	T = subprocess.run(['python','w8p_multiply','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
+	T = subprocess.run(['python','w8p_multiply','dtype','N','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
 	endpy = time.time()
 	timepy = endpy - startpy
 
 	print('py',' ',timepy)
+	timepyavg = (timepy + timepy)/(i+2)
+	print(time01avg)
 	###########################################################################
 
 	############################ C++ 01 subprocess ############################
 	start01 = time.time()
 
 	T01 = subprocess.run(['g++','-std=c++14','-O1','w8c_multiply.cpp','-o','w8c_multiply_1'],stdout=subprocess.PIPE)
-	T011 = subprocess.run(['./w8c_multiply_1','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
+	T011 = subprocess.run(['./w8c_multiply_1','dtype','N','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
 	end01 = time.time()
 	time01 = end01 - start01
 
 	print('01',' ',time01)
+	time01avg = (time01 + time01)/(i+2)
+	print(time01avg)
 	###########################################################################
 
 	############################ C++ 02 subprocess ############################
 	start02 = time.time()
 
 	T02 = subprocess.run(['g++','-std=c++14','-O2','w8c_multiply.cpp','-o','w8c_multiply_2'],stdout=subprocess.PIPE)
-	T021 = subprocess.run(['./w8c_multiply_1','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
+	T021 = subprocess.run(['./w8c_multiply_1','dtype','N','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
 	end02 = time.time()
 	time02 = end02 - start02
@@ -84,7 +89,7 @@ for i in range(Ntrials):
 	start03 = time.time()
 
 	T03 = subprocess.run(['g++','-std=c++14','-O3','w8c_multiply.cpp','-o','w8c_multiply_3'],stdout=subprocess.PIPE)
-	T031 = subprocess.run(['./w8c_multiply_1','dtype','Nlist','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
+	T031 = subprocess.run(['./w8c_multiply_1','dtype','N','a0.txt','b0.txt','c0.txt'],stdout=subprocess.PIPE)
 
 	end03 = time.time()
 	time03 = end03 - start03
