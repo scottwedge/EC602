@@ -10,8 +10,10 @@ Siggi&John
 """
 
 import itertools
+import sys
 
 #innum = "8"
+ext = False;
 
 """
 def search(wrd, num):
@@ -31,7 +33,10 @@ def search(wrd, num):
       print(x)
 """
 
-with open('big_wordlist.txt', "r") as word_list:
+#with open('big_wordlist.txt', "r") as word_list:
+#    words = list(word_list)
+
+with open(sys.argv[1], "r") as word_list:
     words = list(word_list)
 
 #def get_input():
@@ -57,12 +62,20 @@ def test(word, n):
     return compare(p,newlist)
 
 if __name__ == '__main__':
-    # from timeit import Timer
-    inword = 'berdache'
-    word = inword#get_input()
-    n = 8;
-    res = test(word, n)
-    #res = [''.join(p) for p in itertools.permutations('berdache', n-1)]
-    print(res)
-    # t = Timer("test(word)", "from __main__ import test, word")
-    # print t.timeit(number=500)
+    while(ext == False):
+        #user_input = input()
+        #wrd = user_input.split()
+        print(wrd)
+        #inword = user_input[0]
+        #n = int(user_input[1])
+        print(inword)
+        print(n)
+        # from timeit import Timer
+        inword = 'berdache'
+        n = 8;
+        res = test(inword, n)
+        #res = [''.join(p) for p in itertools.permutations('berdache', n-1)]
+        print(res)
+        ext = True
+        # t = Timer("test(word)", "from __main__ import test, word")
+        # print t.timeit(number=500)
