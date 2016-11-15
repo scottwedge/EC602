@@ -11,6 +11,13 @@ Siggi&John
 import sys
 import numpy
 
-bw = numpy.loadtxt(big_wordlist)
-for i in bw:
-	print(i)
+bwfile = sys.argv[1]
+
+#bw = open('big_wordlist.txt', 'r')
+
+word = sys.stdin.readline()
+#Nletters = 
+print(word)
+
+for line in sys.stdin: 
+    print(line)
