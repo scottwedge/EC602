@@ -21,24 +21,24 @@ ext = False;
 with open(sys.argv[1], "r") as word_list:
     words = list(word_list)
 
+#def get_permutations(ent, i):
+#    perms = [''.join(p) for p in itertools.permutations(ent, i)]    
+#    return perms
+
+#def sort(permutations):
+#    return sorted(permutations)
+
 def compress_wordlist(biglist, l):
     return [biglist.strip() for biglist in biglist if len(biglist) == l+1]
 
-def get_permutations(ent, i):
-    perms = [''.join(p) for p in itertools.permutations(ent, i)]    
-    return perms
-
-def sort(permutations):
-    return sorted(permutations)
-
 def compare(a,b):
-    #b = b.rstrip()
     return set(a) & set(b)
 
 def test(word, n):
-    p = get_permutations(word, n)
+    perms = [''.join(p) for p in itertools.permutations(word, n)]  
+    sorted_perms = sorted(perms)
     newlist = compress_wordlist(words, n)
-    return compare(p,newlist)
+    return compare(sorted_perms,newlist)
 
 if __name__ == '__main__':
     while(ext == False):
