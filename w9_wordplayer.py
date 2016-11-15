@@ -5,8 +5,6 @@
 # AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
 
 w9_wordplayer.py
-11/15/16
-Siggi&John
 """
 
 import itertools
@@ -15,7 +13,7 @@ import sys
 ext = False
 
 # with open('big_wordlist.txt', "r") as word_list:
-#    words = list(word_list)
+#   words = list(word_list)
 
 with open(sys.argv[1], "r") as word_list:
     words = list(word_list)
@@ -39,13 +37,22 @@ if __name__ == '__main__':
     while(not ext):
         user_input = input()
         wrd = user_input.split()
-        inword = wrd[0]
-        n = int(wrd[1])
-        res = test(inword, n)
-        res = list(res)
-        sorted_res = sorted(res)
-        for n in range(len(sorted_res)):
-            print(sorted_res[n])
-        print(".")
-        if(n == 0):
+        try:
+            inword = wrd[0]
+        except:
+            inword = ""
+        try:
+            n = int(wrd[1])
+        except:
+            n = ""
+        if(len(inword) > 0 and n > 0):
+            res = test(inword, n)
+            res = list(res)
+            sorted_res = sorted(res)
+            for n in range(len(sorted_res)):
+                print(sorted_res[n])
+            print(".")
+        elif(n == 0):
             ext = True
+        else:
+            print(".")
