@@ -12,38 +12,63 @@
 #include <algorithm>
 using namespace std;
 
-void permute(char a[], int i, int n)
-{
-   int j;
-   if (i == n)
-     cout << a << endl;
-   else
-   {
-       for (j = i; j <= n; j++)
-       {
-          swap(a[i], a[j]);          
-          permute(a, i+1, n);
-          swap(a[i], a[j]);
-       }
-   }
-}
+// void permute(char a[], int i, int n)
+// {
+//    int j;
+//    if (i == n)
+//      cout << a << endl;
+//    else
+//    {
+//        for (j = i; j <= n; j++)
+//        {
+//           swap(a[i], a[j]);          
+//           permute(a, i+1, n);
+//           swap(a[i], a[j]);
+//        }
+//    }
+// }
+//************ permutations ****************
+	// char a[] = "ABCD";
+ //  	permute(a, 0, 3);
+ //  	getchar();
+//******************************************
 
 
 int main(int argc, char *argv[]){
-	char a[] = "ABCD";
-  	permute(a, 0, 3);
-  	getchar();
-	return 0;
-	// ifstream big_wordlist;
 
-	// map<int, vector<string>> mymap;
-	// mymap[1] = ['Siggi'];
-	// //mymap[2] = "John";
+	ifstream big_wordlist;
+	big_wordlist.open(argv[1]);
+
+	string word;
+
+	map<int,vector<string>> mymap;
+
+	while (getline(big_wordlist, word)) {
+		mymap[word.size()].push_back(word);
+	}
+	
+	big_wordlist.close();
+
+	vector<string> a = mymap.at(2);
+	cout << a[0] << endl;
+	// map<int,vector<string>> mymap = {
+ //                { 10, {"lambda","alpha"} },
+ //                { 20, {"theta","beta"} },
+ //                { 30, {"phi","gamma"} } };
+
+ //  	mymap.at(10) = {"alpha","lambda"};
+ //  	mymap.at(20) = {"beta","theta"};
+ //  	mymap.at(30) = {"gamma","phi"};
+
+  	// for (auto& x: mymap) {
+   //  	cout << x.first << '\n';
+   //  	 // << ": " << x.second
+  	// }
 
 	// for(int i = 1; i < 3; i++){
 	// 	cout << mymap[i] << endl;
 	// }
-	// big_wordlist.open(argv[1]);
+	
 
 	// sort( big_wordlist.begin(), big_wordlist.end());
 
@@ -51,5 +76,5 @@ int main(int argc, char *argv[]){
 	// // 	cout << i << endl;
 	// // }
 
-	// big_wordlist.close();
+	return 0;
 }
