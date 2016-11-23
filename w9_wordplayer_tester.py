@@ -10,8 +10,8 @@ import pep8
 # change to whatever is python3 on your computer
 pythonexec = 'python'
 
-sourcecode = "./w9_wordplayer.py"
-#sourcecode = "./w10_wordplayer.cpp"
+#sourcecode = "./w9_wordplayer.py"
+sourcecode = "./w10_wordplayer.cpp"
 
 Wordlist = {}
 Input = {}
