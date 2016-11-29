@@ -25,7 +25,7 @@ Nlist = Nlist[1:9] #Cutting bracket of at beginning and end
 Nlist = Nlist.split(',') 
 
 for i in range(Ntrials):
-	N = Nlist[i]
+	N = str(Nlist[i])
 	print(N)
 	# Make random matrixes of sizes in Nlist
 	A0 = randint(-10,10,(int(Nlist[0]),int(Nlist[0])))
