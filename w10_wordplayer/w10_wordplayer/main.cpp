@@ -11,104 +11,101 @@
 #include <stdlib.h>
 #include <string.h>
 #include <typeinfo>
+#include <algorithm>
+#include <cassert>
+#include <iterator>
+#include <list>
+#include <numeric>
+#include <map>
 
 using namespace std;
 
-void swap(char *x, char *y)
-{
-    char temp;
-    temp = *x;
-    *x = *y;
-    *y = temp;
+std::vector<int> arr;
+std::vector<string> res;
+
+string printArray(int size){
+    string result;
+    for (int i=0;i<size;i++)
+    {
+        char letter = arr[i];
+        result = result + letter;
+        //std::cout << letter << " ";
+    }
+    res.push_back(result);
+    std::cout << std::endl;
+    
+    return result;
 }
 
-void permute(char *a, int l, int r)
-{
+void swap(int x, int y){
+    int temp = arr[x];
+    arr[x]=arr[y];
+    arr[y]=temp;
+    
+    return;
+}
+
+void permute(int k,int size){
     int i;
-    if (l == r)
-        printf("%s\n", a);
-    else
-    {
-        for (i = l; i <= r; i++)
-        {
-            swap((a+l), (a+i));
-            permute(a, l+1, r);
-            swap((a+l), (a+i));
+    if (k==0)
+        printArray(size);
+    else{
+        for (i=k-1;i>=0;i--){
+            swap(i,k-1);
+            permute(k-1,size);
+            swap(i,k-1);
         }
     }
+    
+    return;
 }
 
-// Program to print all combination of size r in an array of size n
-int compare (const void * a, const void * b)
-{  return ( *(int*)a - *(int*)b );  }
-
-void combinationUtil(char arr[], char data[], int start, int end, int index, int r)
-{
-    // Current combination is ready to be printed, print it
-    if (index == r)
-    {
-        for (int i=0; i<r; i++)
-            printf("%c" ,data[i]);
-        printf("\n");
-        return;
-    }
-    
-    // replace index with all possible elements. The condition
-    // "end-i+1 >= r-index" makes sure that including one element
-    // at index will make a combination with remaining elements
-    // at remaining positions
-    for (int i=start; i<=end && end-i+1 >= r-index; i++)
-    {
-        data[index] = arr[i];
-        combinationUtil(arr, data, i+1, end, index+1, r);
-        
-        // Remove duplicates
-        while (arr[i] == arr[i+1])
-            i++;
-    }
-}
-
-void printCombination(char arr[], int n, int r)
-{
-    // A temporary array to store all combination one by one
-    char data[r];
-    
-    // Sort array to handle duplicates
-    qsort (arr, n, sizeof(int), compare);
-    
-    // Print all combination using temprary array 'data[]'
-    combinationUtil(arr, data, 0, n-1, 0, r);
-}
 
 int main(int argc, const char * argv[]) {
-    /*
+    
     ifstream big_wordlist;
     big_wordlist.open(argv[1]);
-    */
     
+    string word;
+    vector<string> mymap;
+    while (getline(big_wordlist, word))
+    {
+        mymap.push_back(word);
+    }
     
-    int x;
+    big_wordlist.close();
+    
     string inword;
+    int x;
+    
     cin >> inword >> x;
+    int len = int(inword.length());
     
-    cout << x << " " << inword << "\n";
+    cout << inword.length() << " " << inword << "\n";
     
-    
-    //string inword = "berdache";
-    
-    //char arr[inword.size()];//as 1 char space for null is also required
-    //strcpy(arr, inword.c_str());
+    for(int i=0;i<len;i++)
+    {
+        arr.push_back(inword[i]);
+    }
 
-    //cout << arr << "\n";
+    permute(len-1,x);
     
-    //cout << arr[0] << " " << arr[1] << "\n";
+    for(int i=0;i<res.size();i++)
+    {
+        cout << res[i] << "\n";
+    }
     
-    char arr[] = {'a', 'b', 'c', 'd', 'e'};
-    cout << arr << "\n";
-    //int arr[] = {1, 2, 3, 4, 5};
-    int n = int(sizeof(arr)/sizeof(arr[0]));
-    int r = 3;
-    printCombination(arr, n, r);
+    sort(mymap.begin(), mymap.end());
+    sort(res.begin(), res.end());
+    vector<string> common;
+    
+    set_intersection(mymap.begin(), mymap.end(), res.begin(), res.end(), back_inserter(common));
+    
+    for(int i=0;i<common.size();i++)
+    {
+        cout << common[i] << "\n";
+    }
+    
     
     return 0;
 }

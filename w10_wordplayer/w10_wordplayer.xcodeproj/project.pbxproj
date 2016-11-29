@@ -246,6 +246,7 @@
 				52E308B51DDBB7CB00C0655B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
