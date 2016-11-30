@@ -40,17 +40,26 @@ int main(int argc, char *argv[]){
 	big_wordlist.open(argv[1]);
 
 	string word;
-
+	vector<string> mymap;
 	map<int,vector<string>> mymap;
 
 	while (getline(big_wordlist, word)) {
 		mymap[word.size()].push_back(word);
 	}
+
+	// while (getline(big_wordlist, word)) 
+	// {
+	// 	mymap.push_back(word);
+	// }
+	// cout << mymap[2] << endl;
 	
 	big_wordlist.close();
 
-	vector<string> a = mymap.at(2);
-	cout << a[0] << endl;
+	// vector<string> a = mymap.at(2);
+	// for (int i; i < a.size(); i++){
+	// 	cout << a[i] << endl;	
+	// }
+	
 	// map<int,vector<string>> mymap = {
  //                { 10, {"lambda","alpha"} },
  //                { 20, {"theta","beta"} },
