@@ -50,9 +50,9 @@ def crop(pngfile):
     out = image[top_left[0]:bottom_right[0]+1,
                 top_left[1]:bottom_right[1]+1]
     outgray = rgb2gray(out)
-    print(pngfile)    
-    print(outgray)
-    print(outgray.shape)
+    #print(pngfile)    
+    #print(outgray)
+    #print(outgray.shape)
     #print(hashlib.md5(outgray).hexdigest())
     #plt.imshow(out)
     #plt.show()
@@ -73,22 +73,23 @@ def variations(cropped):
 photolist = glob.glob("*.png")
 print(photolist)
 
-croplist = []
+croplist = {}
 for photo in photolist:
-    croplist.append(crop(photo))
+    #croplist.append(crop(photo))
+    croplist[photo] = crop(photo)
     #find a way to make photo the key to croplist[index]
 
-var0 = variations(croplist[0])
-#print(var0)
+#i is the keys (png names)
+#n is the actual pictures
 success = []
-for i in croplist:
-    i = i.copy(order='C')
-    var = variations(i)
+for i in croplist.keys():
+    n = croplist[i]
+    n = n.copy(order='C')
+    var = variations(n)
     for j in var:
         j = j.copy(order='C')
-        if(hashlib.md5(j).hexdigest() == hashlib.md5(i).hexdigest()):
+        if(hashlib.md5(j).hexdigest() == hashlib.md5(n).hexdigest()):        
             success.append(i)
-    print(hashlib.md5(i).hexdigest())
 print(success)
 """
 for i in range(0,len(var0)):
