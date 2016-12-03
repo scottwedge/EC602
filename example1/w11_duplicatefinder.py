@@ -34,7 +34,7 @@ import hashlib
 def rgb2gray(rgb):
     r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
     gray = 0.3 * r + 0.6 * g + 0.1 * b
-
+    # 0.3 is red, 0.6 is green, 0.1 is blue, 0.9 is yellow
     return gray
 
 def crop(pngfile):
@@ -77,19 +77,21 @@ croplist = {}
 for photo in photolist:
     #croplist.append(crop(photo))
     croplist[photo] = crop(photo)
-    #find a way to make photo the key to croplist[index]
 
 #i is the keys (png names)
 #n is the actual pictures
 success = []
 for i in croplist.keys():
     n = croplist[i]
-    n = n.copy(order='C')
+    #n = n.copy(order='C')
     var = variations(n)
-    for j in var:
-        j = j.copy(order='C')
-        if(hashlib.md5(j).hexdigest() == hashlib.md5(n).hexdigest()):        
-            success.append(i)
+    for compkey in croplist.keys():
+        compmat = croplist[compkey]
+        for j in var:
+            j = j.copy(order='C')
+            if(hashlib.md5(j).hexdigest() == hashlib.md5(compmat).hexdigest()):        
+                success.append(compkey)
+    success.append(":::")
 print(success)
 """
 for i in range(0,len(var0)):
