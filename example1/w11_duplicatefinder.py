@@ -32,6 +32,9 @@ import glob
 import hashlib
 import re
 
+def transform(item):
+    return int(re.sub("[^0-9]", "", item))
+    
 def rgb2gray(rgb):
     r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
     gray = 0.3 * r + 0.6 * g + 0.1 * b
@@ -70,12 +73,7 @@ def variations(cropped):
         var.append(cropped2)
         cropped2 = np.rot90(cropped2)
     return var
-
-def natural_sort(l): 
-    convert = lambda text: int(text) if text.isdigit() else text.lower() 
-    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
-    return sorted(l, key = alphanum_key)
-
+    
 photolist = glob.glob("*.png")
 #print(photolist)
 
@@ -113,19 +111,10 @@ for i in success:
             #do nothing, this if removes unnecessary blank lines
             print("", end="")
         else:
-            outlisttop.append(outlist)
+            outlisttop.append(sorted(outlist, key=transform))
+            print(sorted(outlist, key=transform), end="")
             outlist = []
             print("")
     j = i
     
-#print(outlisttop)
-"""
-for i in range(0,len(var0)):
-    plt.imshow(var0[i])
-    plt.show()
-    var0[i] = var0[i].copy(order='C')
-    print(hashlib.md5(var0[i]).hexdigest())
-    if(hashlib.md5(croplist[10]).hexdigest() == hashlib.md5(var0[i]).hexdigest()):
-        print('YAY')
-        
-"""
+print((outlisttop))
