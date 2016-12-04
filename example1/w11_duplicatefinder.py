@@ -83,7 +83,7 @@ if __name__ == '__main__':
             for j in var:
                 j = j.copy(order='C')
                 if(hashlib.md5(j).hexdigest() ==
-                  hashlib.md5(compmat).hexdigest()):
+                   hashlib.md5(compmat).hexdigest()):
                     if compkey not in success:
                         success.append(compkey)
         success.append(":::")
@@ -106,8 +106,12 @@ if __name__ == '__main__':
                 # print("")
         j = i
 
+    f = open('ans_test.txt', 'w')
     finallist = sorted(outlisttop, key=transform2)
     for i in finallist:
         for j in i:
             print(j, end=" ")
+            f.write(j + " ")
         print("")
+        f.write("\n")
+    f.close()
