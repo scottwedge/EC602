@@ -81,7 +81,6 @@ if __name__ == '__main__':
     j = ""
     for i in success:
         if(i != ":::"):
-            # print(i, end=" ")
             outlist.append(i)
         else:
             if(j == ":::"):
