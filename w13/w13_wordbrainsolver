@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+# AUTHOR John Keisling jfkeis@bu.edu
+# AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
+
+w9_wordplayer.py
+"""
+import json
+import numpy as np
+from collections import Counter
+import sys
+
+with open(sys.argv[1], "r") as small_word_list:
+    words = list(small_word_list)
+
+with open(sys.argv[2], "r") as large_word_list:
+    words = list(large_word_list)
+
+# with open(sys.argv[1], "r") as _word_list:
+#     words = list(word_list)
