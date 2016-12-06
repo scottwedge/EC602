@@ -4,5 +4,5 @@ rasberr4.png ras14.png
 apple5.png cherr6.png
 apple7.png
 kiwi8.png
-kiw10.png
+kiw10.pngkiw10.png
 app11.png kiwi13.png

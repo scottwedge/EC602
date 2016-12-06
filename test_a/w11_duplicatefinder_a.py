@@ -78,15 +78,16 @@ if __name__ == '__main__':
     for i in croplist.keys():
         n = croplist[i]
         # n = n.copy(order='C')
-        var = variations(n)
-        for compkey in croplist.keys():
-            compmat = croplist[compkey]
-            for j in var:
-                j = j.copy(order='C')
-                if(hashlib.md5(j).hexdigest() ==
-                  hashlib.md5(compmat).hexdigest()):
-                    if compkey not in success:
-                        success.append(compkey)
+        if i not in success:
+            var = variations(n)
+            for compkey in croplist.keys():
+                compmat = croplist[compkey]
+                for j in var:
+                    j = j.copy(order='C')
+                    if(hashlib.md5(j).hexdigest() ==
+                      hashlib.md5(compmat).hexdigest()):
+                        # if compkey not in success:
+                            success.append(compkey)
         success.append(":::")
 
     # annoying print statement
@@ -113,3 +114,4 @@ if __name__ == '__main__':
             print(j, end=" ")
         print("")
 fin = datetime.datetime.now() - start
+print(fin)
