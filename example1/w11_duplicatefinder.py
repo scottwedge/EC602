@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 # AUTHOR John Keisling jfkeis@bu.edu
 # AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
