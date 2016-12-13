@@ -1,6 +1,6 @@
 dictionary.txt
 4 4 4
-6 2 3 5
+6 1 4 5
 R N S O
 E T R T
 B M I V
