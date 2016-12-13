@@ -6,6 +6,15 @@
 
 w13_wordbrainsolver.py
 """
+
+"""
+Input example
+{"grid": ["hos", "equ", "era"], "size": 3, "lengths": [3,6]}
+{"grid": ["yeho", "slnl", "onca", "nnab"], "size": 4, "lengths": [5,5,6]}
+{"grid": ["niba", "capt", "haos", "nwmn"], "size": 4, "lengths": [4,5,3,4]}
+{"grid": ["vittm","aposi","nvami","merep","oordb"],"size":5,"lengths":[4,7,7,7]}
+"""
+
 import json
 import numpy as np
 from collections import Counter
@@ -49,7 +58,7 @@ with open(sys.argv[2], "r") as large_list:
 
 puzzles = {}
 while True:
-    inline = input("")    
+    inline = input("")
     try:
         #makes line a dictionary        
         puzzline = json.loads(inline)
@@ -60,4 +69,10 @@ while True:
         break
 
 # print(all_puzzles[0]['grid'][0][0]) this works down the letter
-print(all_puzzles[0]['grid'][0][0])
+for i in all_puzzles:
+    print(i)
+
+for i in range (0, all_puzzles[0]['size']):
+    for j in range (0, all_puzzles[0]['size']):
+        word1 = all_puzzles[0]['grid'][i][j] + all_puzzles[0]['grid'][i+1][j+1]
+        print(word1)
