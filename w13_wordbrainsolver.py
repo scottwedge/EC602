@@ -2,7 +2,7 @@ import sys
 
 DIC_FILE = None
 HOLD = None
-DICT = None
+DICTO = None
 PRE_DIC = None
 
 class TriePrefix:
@@ -25,47 +25,104 @@ class TriePrefix:
             else:
                 self.root[letter].createKey(wrd[1:])
 
-    def prefix(self, lttr)
-        return, self.root[ord(lttr) - 65]
+    def prefix(self, lttr):
+        return self.root[ord(lttr) - 65]
 
-    def isKey(self, wrd)
+    def isKey(self, wrd):
         if (len(wrd) == 0):
             return True
         else:
             letter = ord(wrd[0]) - 65
             if self.root[letter] == None:
                 return False
-            else
+            else:
                 return isKey(wrd[1:])
 
-def prefixesTrie(dict):
+def prefixesTrie(dic):
     global DIC_FILE
     global HOLD
-    global DICT
+    global DICTO
     global PRE_DIC
 
-    DIC_FILE = dict
+    DIC_FILE = dic
     HOLD = '-'
-    DICT = []
+    DICTO = []
     PRE_DIC = TriePrefix()
 
-    with open(DIC_FILE) as w:
-        l = w.readLines()
+    with open(DIC_FILE, "r") as f:
+        l = f.readlines()
 
     for line in l:
-        DICT.append(line.strip('\n'))
+        DICTO.append(line.strip('\n'))
 
-    for w in DICT:
+    for w in DICTO:
         PRE_DIC.createKey(w)
 
-def trace(solution, grid, x, y, letters, row, col, word, step, preTree):
+def solAppend(s, ans):
+    if s:
+        ans.append(s)
+
+def trace(solution, grid, x, y, letter, row, col, word, step, preTree):
     global HOLD
-    global DICT
+    global DICTO
 
+    if [x,y] in step:
+        return False
 
-if __name__ == "__main__":
+    if (x >= col) or (y >= row) or (x < 0) or (y < 0) or (grid[x][y] == HOLD):
+        return False
+
+    word += grid[x][y]
+    nextStep = list(step)
+    nextStep.append([x, y])
+    preTree = preTree.prefix(word[-1])
+    letter -= 1
+
+    if preTree == None:
+        return False
+
+    if letter == 0:
+        if preTree.isWord == True:
+            return [grid, word, nextStep]
+        else:
+            return False
+
+    #check paths
+    checkSol = trace(solution, grid, x + 1, y, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+    checkSol = trace(solution, grid, x + 1, y + 1, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+    checkSol = trace(solution, grid, x, y + 1, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+    checkSol = trace(solution, grid, x - 1, y, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+    checkSol = trace(solution, grid, x, y - 1, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+    checkSol = trace(solution, grid, x - 1, y - 1, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+    checkSol = trace(solution, grid, x + 1, y - 1, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+    checkSol = trace(solution, grid, x - 1, y + 1, letter, row, col, word, nextStep, preTree)
+    solAppend(checkSol, solution)
+
+def applyGravity(grid, row, col):
     global HOLD
     global PRE_DIC
+    for r in range(row - 1):
+        for c in range(col):
+            if (grid[r + 1][c] == HOLD):
+                for t in reversed(range(r + 1)):
+                    grid[t + 1][c] = grid[t][c]
+                grid[0][c] = HOLD
+
+if __name__ == "__main__":
 
     #get dictionary file
 
@@ -80,7 +137,36 @@ if __name__ == "__main__":
 
     #get letter grid in rows
 
-    solved = [[gird,[]]]
+    inputFile = sys.argv[1]
+    with open(inputFile) as f:
+        info = f.readlines()
+
+    prefixesTrie(info[0].strip('\n'))
+
+    rcw = info[1].strip('\n').split(" ")
+    if len(rcw) != 3:
+        print("ERROR: The first line of " + inputFile + " should contain only <Number of Rows> <Number of Columns> <Number of Words>")
+
+    rows = int(rcw[0])
+    cols = int(rcw[1])
+    ansWords = int(rcw[2])
+
+    lets = info[2].strip('\n').split(" ")
+    for i in range(len(lets)):
+        lets[i] = int(lets[i])
+    
+    if len(lets) != ansWords:
+        print("ERROR: The second line of " + inputFile + " should have the same number of numbers as the number of words")
+
+    info = info[3:]
+    
+    grid = []
+    for r in info:
+        r = r.strip('\n')
+        l = r.split(" ")
+        grid.append(l)
+
+    solved = [[grid,[]]]
     nGrid = 0;
     nWord = 1;
     nStep = 2;
@@ -93,7 +179,7 @@ if __name__ == "__main__":
             possibleSol = []
             for r in range(rows):
                 for c in range(cols):
-                    sol = trace(possibleSol, grp[nGrid]),
+                    sol = trace(possibleSol, grp[nGrid], r, c, lets[runs], rows, cols, "", [], PRE_DIC),
                     if sol:
                         possibleSol.append(sol)
             #let letters fall down
@@ -107,8 +193,8 @@ if __name__ == "__main__":
                     nextGrid.append(list(pSol[nGrid][r]))
 
                 for step in pSol[nStep]:
-                    newX = nextPath[]
-                    newY = nextPath[]
+                    newX = step[nx]
+                    newY = step[ny]
                     nextGrid[newX][newY] = HOLD;
 
                 #apply gravity
