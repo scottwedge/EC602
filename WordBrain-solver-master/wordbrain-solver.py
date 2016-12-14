@@ -156,7 +156,7 @@ def main(args):
     numRows = 4
     numCols = 4
     numWords = 4
-    numLetters = [6,2,3,5]
+    numLetters = [5,3,3,5]
     
     with open(inputFile) as f:
         info = f.readlines()
