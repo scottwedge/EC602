@@ -12,3 +12,6 @@ import re
 from skimage.io import imread
 import numpy as np
 import hashlib
+
+#skimage.io.imread(fname, as_grey=False, plugin=None, flatten=None, **plugin_args)
+

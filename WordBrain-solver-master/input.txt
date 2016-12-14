@@ -1,7 +1,6 @@
 dictionary.txt
-4 4 4
-6 2 3 5
-R N S O
-E T R T
-B M I V
-T W I A
+3 3 2
+3 6
+H E E
+O Q R
+S U A
