@@ -1,14 +1,12 @@
-#Howard Zeng
+# Copyright 2016, Howard Zeng
+# All rights reserved
 
-import json
 import sys
-import numpy as np
 
 POSITION = None
 FILE = None
 DIC = None
 PRE_DIC = None
-all_puzzles = []
 
 class Trie:
 
@@ -32,18 +30,16 @@ class Trie:
                 self.root[let].addKey(iWord[1:])
 
     def pre(self, iLetter):
-        return self.root[ord(iLetter) - 97]
+        return self.root[ord(iLetter) - 65]
 
 def createTrie(iDictionaryFile):
     global FILE
     global DIC
     global PRE_DIC
-    global POSITION
 
     FILE = iDictionaryFile
     DIC = []
     PRE_DIC = Trie()
-    POSITION = '-'
 
     with open(FILE) as f:
         lines = f.readlines()
@@ -122,7 +118,6 @@ def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
 
 if __name__ == "__main__":
     
-
     # For enumeration
     xCounter = 0
     yCounter = 1
@@ -130,81 +125,72 @@ if __name__ == "__main__":
     wordCounter = 1
     stepCounter = 2
 
-    inputFile = sys.argv[2]
+    inputFile = sys.argv[1]
+    
+    with open(inputFile) as f:
+        info = f.readlines()
     
     # Extract the dictionary file (first line of the input file)
-    createTrie(inputFile)
-
-    while True:
-        inline = input("")    
-        try:
-            #makes line a dictionary        
-            puzzline = json.loads(inline)
-            all_puzzles.append(puzzline)
-            #print(all_puzzles)
-        except:
-            break
+    createTrie(info[0].strip('\n'))
     
-    for puz in range(len(all_puzzles)):
-        letters = []
-        for i in range(len(all_puzzles[puz]['grid'])):
-            letters.append(all_puzzles[puz]['grid'][i])
-            #print(all_puzzles[2]['grid'][i])
-        
-        let = [[y for y in x] for x in [x for x in all_puzzles[puz]['grid']]]
-        l = np.array(let)
-        l = np.rot90(l)
-        l = np.flipud(l) 
-        
-        grid = []
-        for r in range(len(l)):
-            grid.append(l[r])
-            
-        rows = len(grid)
-        cols = len(grid[0])
-        size = all_puzzles[puz]['size']
-        
-        if(size != rows and size != cols):
-            print("Error size conflict")
-        
-        wordLens = [int(x) for x in all_puzzles[puz]['lengths']]
-        ansWords = len(wordLens)
-
-        if len(wordLens) != ansWords:
-            print("Error incorrect number of words")
-        
-        solPool = [[grid,[]]]
-
-        for runs in range(ansWords):
-            posSol2 = []
-            for ans in solPool:
-                posSol1 = []
-                for r in range(rows):
-                    for c in range(cols):
-                        solution = traverse(posSol1, ans[gridCounter], r, c, wordLens[runs], rows, cols, "", [], PRE_DIC)
-                        if solution:
-                            posSol1.append(solution)
-
-                for posSol in posSol1:
-                    tempList = list(ans[wordCounter])
-                    tempList.append(posSol[wordCounter])
-                    
-                    nextGrid = []
-                    for row in range(rows):
-                        tempRow = list(posSol[gridCounter][row])
-                        nextGrid.append(tempRow)
-                    
-                    for stepTaken in posSol[stepCounter]:
-                        x = stepTaken[xCounter]
-                        y = stepTaken[yCounter]
-                        nextGrid[x][y] = POSITION
-
-                    applyGravity(nextGrid, rows, cols)
-                    posSol2.append([nextGrid, tempList])
-            
-            solPool = posSol2
-
-        solPool.sort()
+    # Extract information of the number of rows, columns, and words (second line of the input file)
+    rcw = info[1].strip('\n').split(" ")
+    if len(rcw) != 3:
+        print("ERROR: The first line of " + inputFile + " should contain only <Number of Rows> <Number of Columns> <Number of Words>")
+    
+    rows = int(rcw[0])
+    cols = int(rcw[1])
+    ansWords = int(rcw[2])
+    
+    # Extract the number of letters in each word (third line of the input file)
+    wordLens = info[2].strip('\n').split(" ")
+    for i in range(len(wordLens)):
+        wordLens[i] = int(wordLens[i])
+    
+    if len(wordLens) != ansWords:
+        print("ERROR: The second line of " + inputFile + " should have the same number of numbers as the number of words")
+    
+    
+    # Extract the letter grid (the rest of the lines)
+    info = info[3:]
+    
+    grid = []
+    for row in info:
+        row = row.strip('\n')
+        line = row.split(" ")
+        grid.append(line)
+    
+    solPool = [[grid,[]]]
+    
+    for runs in range(ansWords):
+        posSol2 = []
         for ans in solPool:
-            print(ans[wordCounter])
-        print(".")
+            posSol1 = []
+            for r in range(rows):
+                for c in range(cols):
+                    solution = traverse(posSol1, ans[gridCounter], r, c, wordLens[runs], rows, cols, "", [], PRE_DIC)
+                    if solution:
+                        posSol1.append(solution)
+
+            for posSol in posSol1:
+                tempList = list(ans[wordCounter])
+                tempList.append(posSol[wordCounter])
+                
+                nextGrid = []
+                for row in range(rows):
+                    tempRow = list(posSol[gridCounter][row])
+                    nextGrid.append(tempRow)
+                
+                for stepTaken in posSol[stepCounter]:
+                    x = stepTaken[xCounter]
+                    y = stepTaken[yCounter]
+                    nextGrid[x][y] = POSITION
+
+                applyGravity(nextGrid, rows, cols)
+                posSol2.append([nextGrid, tempList])
+        
+        solPool = posSol2
+
+    solPool.sort()
+    for ans in solPool:
+        print(ans[wordCounter])
