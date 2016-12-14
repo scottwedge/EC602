@@ -1,4 +1,4 @@
-dictionary.txt
+large_word_list.txt
 4 4 4
 6 2 3 5
 R N S O

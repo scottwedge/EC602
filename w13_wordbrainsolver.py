@@ -1,212 +1,196 @@
+# Copyright 2016, Howard Zeng
+# All rights reserved
+
 import sys
 
-DIC_FILE = None
-HOLD = None
-DICTO = None
+POSITION = None
+FILE = None
+DIC = None
 PRE_DIC = None
 
-class TriePrefix:
-    def __init__(self):
-        self.isWord = False
-        self.root = []
-        for n in range(26):
-            self.root.append(None)
+class Trie:
 
-    def createKey(self, wrd):
-        if (len(wrd) == 0):
+    def __init__(self):
+        self.root = []
+        self.isWord = False
+        for l in range(26):
+            self.root.append(None)
+        
+    def addKey(self, iWord):
+        if len(iWord) == 0:
             self.isWord = True
         else:
-            #convert hex to dec
-            letter = ord(wrd[0]) - 65
-            if (self.root[letter] == None):
-                newBranch = TriePrefix()
-                newBranch.createKey(wrd[1:])
-                self.root[letter] = newBranch
+            # 65 is ord('A')
+            let = ord(iWord[0]) - 97
+            if self.root[let] == None:
+                newTree = Trie()
+                newTree.addKey(iWord[1:])
+                self.root[let] = newTree
             else:
-                self.root[letter].createKey(wrd[1:])
+                self.root[let].addKey(iWord[1:])
 
-    def prefix(self, lttr):
-        return self.root[ord(lttr) - 65]
+    def pre(self, iLetter):
+        return self.root[ord(iLetter) - 65]
 
-    def isKey(self, wrd):
-        if (len(wrd) == 0):
-            return True
-        else:
-            letter = ord(wrd[0]) - 65
-            if self.root[letter] == None:
-                return False
-            else:
-                return isKey(wrd[1:])
-
-def prefixesTrie(dic):
-    global DIC_FILE
-    global HOLD
-    global DICTO
+def createTrie(iDictionaryFile):
+    global FILE
+    global DIC
     global PRE_DIC
 
-    DIC_FILE = dic
-    HOLD = '-'
-    DICTO = []
-    PRE_DIC = TriePrefix()
+    FILE = iDictionaryFile
+    DIC = []
+    PRE_DIC = Trie()
 
-    with open(DIC_FILE, "r") as f:
-        l = f.readlines()
+    with open(FILE) as f:
+        lines = f.readlines()
 
-    for line in l:
-        DICTO.append(line.strip('\n'))
+    for line in lines:
+        DIC.append(line.strip('\n'))
+        
+    for word in DIC:
+        PRE_DIC.addKey(word)
 
-    for w in DICTO:
-        PRE_DIC.createKey(w)
+def applyGravity(g, rows, cols):
+    global POSITION
+    
+    for r in range(rows-1):
+        for c in range(cols):
+            if g[r+1][c] == POSITION:
+                for hold in reversed(range(r+1)):
+                    g[hold+1][c] = g[hold][c]
+                g[0][c] = POSITION
 
 def solAppend(s, ans):
     if s:
         ans.append(s)
 
-def trace(solution, grid, x, y, letter, row, col, word, step, preTree):
-    global HOLD
-    global DICTO
-
-    if [x,y] in step:
+# Traverses grid in all of the 8 directions on a 2d grid
+def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
+    global POSITION
+    global DIC
+    
+    if (x >= col) or (y >= row) or (x < 0) or (y < 0) or (grid[x][y] == POSITION):
         return False
-
-    if (x >= col) or (y >= row) or (x < 0) or (y < 0) or (grid[x][y] == HOLD):
+        
+    if [x, y] in stp:
         return False
-
-    word += grid[x][y]
-    nextStep = list(step)
-    nextStep.append([x, y])
-    preTree = preTree.prefix(word[-1])
-    letter -= 1
-
-    if preTree == None:
+    
+    newSteps = list(stp)
+    newSteps.append([x, y])
+    wrd += grid[x][y]
+    remain -= 1
+    letter = wrd[-1]
+    branch = branch.pre(letter)
+    
+    if branch == None:
         return False
-
-    if letter == 0:
-        if preTree.isWord == True:
-            return [grid, word, nextStep]
+    
+    if remain == 0:
+        if branch.isWord == True:
+            return [grid, wrd, newSteps]
         else:
             return False
+        
 
-    #check paths
-    checkSol = trace(solution, grid, x + 1, y, letter, row, col, word, nextStep, preTree)
+    checkSol = traverse(solution, grid, x + 1, y, remain, row, col, wrd, newSteps, branch)
+    solAppend(checkSol, solution)
+    
+    checkSol = traverse(solution, grid, x, y + 1, remain, row, col, wrd, newSteps, branch)
+    solAppend(checkSol, solution)
+    
+    checkSol = traverse(solution, grid, x - 1, y, remain, row, col, wrd, newSteps, branch)
+    solAppend(checkSol, solution)
+  
+    checkSol = traverse(solution, grid, x, y - 1, remain, row, col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
 
-    checkSol = trace(solution, grid, x + 1, y + 1, letter, row, col, word, nextStep, preTree)
+    checkSol = traverse(solution, grid, x + 1, y + 1, remain, row, col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
 
-    checkSol = trace(solution, grid, x, y + 1, letter, row, col, word, nextStep, preTree)
+    checkSol = traverse(solution, grid, x - 1, y - 1, remain, row, col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
-
-    checkSol = trace(solution, grid, x - 1, y, letter, row, col, word, nextStep, preTree)
+        
+    checkSol = traverse(solution, grid, x + 1, y - 1, remain, row, col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
-
-    checkSol = trace(solution, grid, x, y - 1, letter, row, col, word, nextStep, preTree)
+        
+    checkSol = traverse(solution, grid, x - 1, y + 1, remain, row, col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
-
-    checkSol = trace(solution, grid, x - 1, y - 1, letter, row, col, word, nextStep, preTree)
-    solAppend(checkSol, solution)
-
-    checkSol = trace(solution, grid, x + 1, y - 1, letter, row, col, word, nextStep, preTree)
-    solAppend(checkSol, solution)
-
-    checkSol = trace(solution, grid, x - 1, y + 1, letter, row, col, word, nextStep, preTree)
-    solAppend(checkSol, solution)
-
-def applyGravity(grid, row, col):
-    global HOLD
-    global PRE_DIC
-    for r in range(row - 1):
-        for c in range(col):
-            if (grid[r + 1][c] == HOLD):
-                for t in reversed(range(r + 1)):
-                    grid[t + 1][c] = grid[t][c]
-                grid[0][c] = HOLD
 
 if __name__ == "__main__":
-
-    #get dictionary file
-
-    #get rows columns and words
-    rows = 0;
-    cols = 0;
-    ansWords = 0;
-
-    #get lengths of words
-
-    #check to see that lengths add up
-
-    #get letter grid in rows
+    
+    # For enumeration
+    xCounter = 0
+    yCounter = 1
+    gridCounter = 0
+    wordCounter = 1
+    stepCounter = 2
 
     inputFile = sys.argv[1]
+    
     with open(inputFile) as f:
         info = f.readlines()
-
-    prefixesTrie(info[0].strip('\n'))
-
+    
+    # Extract the dictionary file (first line of the input file)
+    createTrie(info[0].strip('\n'))
+    
+    # Extract information of the number of rows, columns, and words (second line of the input file)
     rcw = info[1].strip('\n').split(" ")
     if len(rcw) != 3:
         print("ERROR: The first line of " + inputFile + " should contain only <Number of Rows> <Number of Columns> <Number of Words>")
-
+    
     rows = int(rcw[0])
     cols = int(rcw[1])
     ansWords = int(rcw[2])
-
-    lets = info[2].strip('\n').split(" ")
-    for i in range(len(lets)):
-        lets[i] = int(lets[i])
     
-    if len(lets) != ansWords:
+    # Extract the number of letters in each word (third line of the input file)
+    wordLens = info[2].strip('\n').split(" ")
+    for i in range(len(wordLens)):
+        wordLens[i] = int(wordLens[i])
+    
+    if len(wordLens) != ansWords:
         print("ERROR: The second line of " + inputFile + " should have the same number of numbers as the number of words")
-
+    
+    
+    # Extract the letter grid (the rest of the lines)
     info = info[3:]
     
     grid = []
-    for r in info:
-        r = r.strip('\n')
-        l = r.split(" ")
-        grid.append(l)
-
-    solved = [[grid,[]]]
-    nGrid = 0;
-    nWord = 1;
-    nStep = 2;
-    nx = 0;
-    ny = 1;
-
+    for row in info:
+        row = row.strip('\n')
+        line = row.split(" ")
+        grid.append(line)
+    
+    solPool = [[grid,[]]]
+    
     for runs in range(ansWords):
-        possibleSol2 = []
-        for grp in solved:
-            possibleSol = []
+        posSol2 = []
+        for ans in solPool:
+            posSol1 = []
             for r in range(rows):
                 for c in range(cols):
-                    sol = trace(possibleSol, grp[nGrid], r, c, lets[runs], rows, cols, "", [], PRE_DIC),
-                    if sol:
-                        possibleSol.append(sol)
-            #let letters fall down
-            for pSol in possibleSol:
-                wList = list(grp[nWord])
-                wList.append(pSol[nWord])
+                    solution = traverse(posSol1, ans[gridCounter], r, c, wordLens[runs], rows, cols, "", [], PRE_DIC)
+                    if solution:
+                        posSol1.append(solution)
 
-                #copy of temp sol
+            for posSol in posSol1:
+                tempList = list(ans[wordCounter])
+                tempList.append(posSol[wordCounter])
+                
                 nextGrid = []
-                for r in range(rows):
-                    nextGrid.append(list(pSol[nGrid][r]))
+                for row in range(rows):
+                    tempRow = list(posSol[gridCounter][row])
+                    nextGrid.append(tempRow)
+                
+                for stepTaken in posSol[stepCounter]:
+                    x = stepTaken[xCounter]
+                    y = stepTaken[yCounter]
+                    nextGrid[x][y] = POSITION
 
-                for step in pSol[nStep]:
-                    newX = step[nx]
-                    newY = step[ny]
-                    nextGrid[newX][newY] = HOLD;
-
-                #apply gravity
                 applyGravity(nextGrid, rows, cols)
-                possibleSol2.append([nextGrid, wList])
+                posSol2.append([nextGrid, tempList])
+        
+        solPool = posSol2
 
-        solved = possibleSol2
-
-    #print final solution
-    solved.sort()
-    for s in solved:
-        print(s[nWord])
-
-
-
+    solPool.sort()
+    for ans in solPool:
+        print(ans[wordCounter])
