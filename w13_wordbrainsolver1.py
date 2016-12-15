@@ -22,7 +22,6 @@ class Trie:
         if len(iWord) == 0:
             self.isWord = True
         else:
-            # 65 is ord('A')
             let = ord(iWord[0]) - 97
             if self.root[let] == None:
                 newTree = Trie()
@@ -38,12 +37,12 @@ def createTrie(iDictionaryFile):
     global FILE
     global DIC
     global PRE_DIC
-    global POSITION
+    #global POSITION
 
     FILE = iDictionaryFile
     DIC = []
     PRE_DIC = Trie()
-    POSITION = '-'
+    #POSITION = '-'
 
     with open(FILE) as f:
         lines = f.readlines()
@@ -68,7 +67,6 @@ def solAppend(s, ans):
     if s:
         ans.append(s)
 
-# Traverses grid in all of the 8 directions on a 2d grid
 def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
     global POSITION
     global DIC
@@ -121,27 +119,16 @@ def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
     solAppend(checkSol, solution)
 
 if __name__ == "__main__":
-    
-
-    # For enumeration
-    xCounter = 0
-    yCounter = 1
-    gridCounter = 0
-    wordCounter = 1
-    stepCounter = 2
 
     inputFile = sys.argv[2]
-    
-    # Extract the dictionary file (first line of the input file)
+
     createTrie(inputFile)
 
     while True:
         inline = input("")    
-        try:
-            #makes line a dictionary        
+        try:     
             puzzline = json.loads(inline)
             all_puzzles.append(puzzline)
-            #print(all_puzzles)
         except:
             break
     
@@ -149,7 +136,6 @@ if __name__ == "__main__":
         letters = []
         for i in range(len(all_puzzles[puz]['grid'])):
             letters.append(all_puzzles[puz]['grid'][i])
-            #print(all_puzzles[2]['grid'][i])
         
         let = [[y for y in x] for x in [x for x in all_puzzles[puz]['grid']]]
         l = np.array(let)
@@ -174,6 +160,12 @@ if __name__ == "__main__":
             print("Error incorrect number of words")
         
         solPool = [[grid,[]]]
+
+        xCounter = 0
+        yCounter = 1
+        gridCounter = 0
+        wordCounter = 1
+        stepCounter = 2
 
         for runs in range(ansWords):
             posSol2 = []
@@ -205,6 +197,12 @@ if __name__ == "__main__":
             solPool = posSol2
 
         solPool.sort()
+        finalAns = []
         for ans in solPool:
-            print(ans[wordCounter])
+            if ans[wordCounter] not in finalAns:
+                finalAns.append(ans[wordCounter])
+        for i in finalAns:
+            for j in i:
+                print(j, end=" ")
+            print("")
         print(".")
