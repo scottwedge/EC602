@@ -1,12 +1,21 @@
-# Copyright 2016, Howard Zeng
-# All rights reserved
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+# AUTHOR John Keisling jfkeis@bu.edu
+# AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
 
+w13_wordbrainsolver.py
+"""
+
+import json
 import sys
+import numpy as np
 
 POSITION = None
 FILE = None
 DIC = None
 PRE_DIC = None
+all_puzzles = []
 
 class Trie:
 
@@ -20,7 +29,6 @@ class Trie:
         if len(iWord) == 0:
             self.isWord = True
         else:
-            # 65 is ord('A')
             let = ord(iWord[0]) - 97
             if self.root[let] == None:
                 newTree = Trie()
@@ -30,7 +38,7 @@ class Trie:
                 self.root[let].addKey(iWord[1:])
 
     def pre(self, iLetter):
-        return self.root[ord(iLetter) - 65]
+        return self.root[ord(iLetter) - 97]
 
 def createTrie(iDictionaryFile):
     global FILE
@@ -64,7 +72,6 @@ def solAppend(s, ans):
     if s:
         ans.append(s)
 
-# Traverses grid in all of the 8 directions on a 2d grid
 def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
     global POSITION
     global DIC
@@ -116,52 +123,44 @@ def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
     checkSol = traverse(solution, grid, x - 1, y + 1, remain, row, col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
 
-if __name__ == "__main__":
+def win(inputFile):
+
+    createTrie(inputFile)
+
+    letters = []
+    for i in range(len(all_puzzles[puz]['grid'])):
+        letters.append(all_puzzles[puz]['grid'][i])
     
-    # For enumeration
+    let = [[y for y in x] for x in [x for x in all_puzzles[puz]['grid']]]
+    l = np.array(let)
+    l = np.rot90(l)
+    l = np.flipud(l) 
+    
+    grid = []
+    for r in range(len(l)):
+        grid.append(l[r])
+        
+    rows = len(grid)
+    cols = len(grid[0])
+    size = all_puzzles[puz]['size']
+    
+    if(size != rows and size != cols):
+        print("Error size conflict")
+    
+    wordLens = [int(x) for x in all_puzzles[puz]['lengths']]
+    ansWords = len(wordLens)
+
+    if len(wordLens) != ansWords:
+        print("Error incorrect number of words")
+    
+    solPool = [[grid,[]]]
+
     xCounter = 0
     yCounter = 1
     gridCounter = 0
     wordCounter = 1
     stepCounter = 2
 
-    inputFile = sys.argv[1]
-    
-    with open(inputFile) as f:
-        info = f.readlines()
-    
-    # Extract the dictionary file (first line of the input file)
-    createTrie(info[0].strip('\n'))
-    
-    # Extract information of the number of rows, columns, and words (second line of the input file)
-    rcw = info[1].strip('\n').split(" ")
-    if len(rcw) != 3:
-        print("ERROR: The first line of " + inputFile + " should contain only <Number of Rows> <Number of Columns> <Number of Words>")
-    
-    rows = int(rcw[0])
-    cols = int(rcw[1])
-    ansWords = int(rcw[2])
-    
-    # Extract the number of letters in each word (third line of the input file)
-    wordLens = info[2].strip('\n').split(" ")
-    for i in range(len(wordLens)):
-        wordLens[i] = int(wordLens[i])
-    
-    if len(wordLens) != ansWords:
-        print("ERROR: The second line of " + inputFile + " should have the same number of numbers as the number of words")
-    
-    
-    # Extract the letter grid (the rest of the lines)
-    info = info[3:]
-    
-    grid = []
-    for row in info:
-        row = row.strip('\n')
-        line = row.split(" ")
-        grid.append(line)
-    
-    solPool = [[grid,[]]]
-    
     for runs in range(ansWords):
         posSol2 = []
         for ans in solPool:
@@ -192,5 +191,30 @@ if __name__ == "__main__":
         solPool = posSol2
 
     solPool.sort()
+    finalAns = []
     for ans in solPool:
-        print(ans[wordCounter])
+        if ans[wordCounter] not in finalAns:
+            finalAns.append(ans[wordCounter])
+    return finalAns
+
+if __name__ == "__main__":
+
+    while True:
+        inline = input("")    
+        try:     
+            puzzline = json.loads(inline)
+            all_puzzles.append(puzzline)
+        except:
+            break
+
+    for puz in range(len(all_puzzles)):
+        answer = win(sys.argv[1])
+
+        if (len(answer) == 0):
+            answer = win(sys.argv[2])
+
+        for i in answer:
+            for j in i:
+                print(j, end=" ")
+            print("")
+        print(".")
