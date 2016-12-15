@@ -17,6 +17,7 @@ DIC = None
 PRE_DIC = None
 all_puzzles = []
 
+
 class Trie:
 
     def __init__(self):
@@ -24,7 +25,7 @@ class Trie:
         self.isWord = False
         for l in range(26):
             self.root.append(None)
-        
+
     def addKey(self, iWord):
         if len(iWord) == 0:
             self.isWord = True
@@ -40,6 +41,7 @@ class Trie:
     def pre(self, iLetter):
         return self.root[ord(iLetter) - 97]
 
+
 def createTrie(iDictionaryFile):
     global FILE
     global DIC
@@ -54,13 +56,14 @@ def createTrie(iDictionaryFile):
 
     for line in lines:
         DIC.append(line.strip('\n'))
-        
+
     for word in DIC:
         PRE_DIC.addKey(word)
 
+
 def applyGravity(g, rows, cols):
     global POSITION
-    
+
     for r in range(rows-1):
         for c in range(cols):
             if g[r+1][c] == POSITION:
@@ -68,60 +71,71 @@ def applyGravity(g, rows, cols):
                     g[hold+1][c] = g[hold][c]
                 g[0][c] = POSITION
 
+
 def solAppend(s, ans):
     if s:
         ans.append(s)
 
+
 def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
     global POSITION
     global DIC
-    
-    if (x >= col) or (y >= row) or (x < 0) or (y < 0) or (grid[x][y] == POSITION):
-        return False
-        
+
     if [x, y] in stp:
         return False
-    
+
+    if ((x >= col) or (y >= row) or (x < 0) or (y < 0)
+            (grid[x][y] == POSITION)):
+        return False
+
     newSteps = list(stp)
     newSteps.append([x, y])
     wrd += grid[x][y]
     remain -= 1
     letter = wrd[-1]
     branch = branch.pre(letter)
-    
-    if branch == None:
+
+    if branch is None:
         return False
-    
+
     if remain == 0:
-        if branch.isWord == True:
+        if (branch.isWord):
             return [grid, wrd, newSteps]
         else:
             return False
-        
 
-    checkSol = traverse(solution, grid, x + 1, y, remain, row, col, wrd, newSteps, branch)
-    solAppend(checkSol, solution)
-    
-    checkSol = traverse(solution, grid, x, y + 1, remain, row, col, wrd, newSteps, branch)
-    solAppend(checkSol, solution)
-    
-    checkSol = traverse(solution, grid, x - 1, y, remain, row, col, wrd, newSteps, branch)
-    solAppend(checkSol, solution)
-  
-    checkSol = traverse(solution, grid, x, y - 1, remain, row, col, wrd, newSteps, branch)
+    checkSol = traverse(solution, grid, x + 1, y, remain, row,
+                        col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
 
-    checkSol = traverse(solution, grid, x + 1, y + 1, remain, row, col, wrd, newSteps, branch)
+    checkSol = traverse(solution, grid, x, y + 1, remain, row,
+                        col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
 
-    checkSol = traverse(solution, grid, x - 1, y - 1, remain, row, col, wrd, newSteps, branch)
+    checkSol = traverse(solution, grid, x - 1, y, remain, row,
+                        col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
-        
-    checkSol = traverse(solution, grid, x + 1, y - 1, remain, row, col, wrd, newSteps, branch)
+
+    checkSol = traverse(solution, grid, x, y - 1, remain, row,
+                        col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
-        
-    checkSol = traverse(solution, grid, x - 1, y + 1, remain, row, col, wrd, newSteps, branch)
+
+    checkSol = traverse(solution, grid, x + 1, y + 1, remain, row,
+                        col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
+
+    checkSol = traverse(solution, grid, x - 1, y - 1, remain, row,
+                        col, wrd, newSteps, branch)
+    solAppend(checkSol, solution)
+
+    checkSol = traverse(solution, grid, x + 1, y - 1, remain, row,
+                        col, wrd, newSteps, branch)
+    solAppend(checkSol, solution)
+
+    checkSol = traverse(solution, grid, x - 1, y + 1, remain, row,
+                        col, wrd, newSteps, branch)
+    solAppend(checkSol, solution)
+
 
 def win(inputFile):
 
@@ -130,30 +144,30 @@ def win(inputFile):
     letters = []
     for i in range(len(all_puzzles[puz]['grid'])):
         letters.append(all_puzzles[puz]['grid'][i])
-    
+
     let = [[y for y in x] for x in [x for x in all_puzzles[puz]['grid']]]
     l = np.array(let)
     l = np.rot90(l)
-    l = np.flipud(l) 
-    
+    l = np.flipud(l)
+
     grid = []
     for r in range(len(l)):
         grid.append(l[r])
-        
+
     rows = len(grid)
     cols = len(grid[0])
     size = all_puzzles[puz]['size']
-    
+
     if(size != rows and size != cols):
         print("Error size conflict")
-    
+
     wordLens = [int(x) for x in all_puzzles[puz]['lengths']]
     ansWords = len(wordLens)
 
     if len(wordLens) != ansWords:
         print("Error incorrect number of words")
-    
-    solPool = [[grid,[]]]
+
+    solPool = [[grid, []]]
 
     xCounter = 0
     yCounter = 1
@@ -167,19 +181,21 @@ def win(inputFile):
             posSol1 = []
             for r in range(rows):
                 for c in range(cols):
-                    solution = traverse(posSol1, ans[gridCounter], r, c, wordLens[runs], rows, cols, "", [], PRE_DIC)
+                    solution = traverse(posSol1, ans[gridCounter], r, c,
+                                        wordLens[runs], rows, cols,
+                                        "", [], PRE_DIC)
                     if solution:
                         posSol1.append(solution)
 
             for posSol in posSol1:
                 tempList = list(ans[wordCounter])
                 tempList.append(posSol[wordCounter])
-                
+
                 nextGrid = []
                 for row in range(rows):
                     tempRow = list(posSol[gridCounter][row])
                     nextGrid.append(tempRow)
-                
+
                 for stepTaken in posSol[stepCounter]:
                     x = stepTaken[xCounter]
                     y = stepTaken[yCounter]
@@ -187,7 +203,7 @@ def win(inputFile):
 
                 applyGravity(nextGrid, rows, cols)
                 posSol2.append([nextGrid, tempList])
-        
+
         solPool = posSol2
 
     solPool.sort()
@@ -197,11 +213,12 @@ def win(inputFile):
             finalAns.append(ans[wordCounter])
     return finalAns
 
+
 if __name__ == "__main__":
 
     while True:
-        inline = input("")    
-        try:     
+        inline = input("")
+        try:
             puzzline = json.loads(inline)
             all_puzzles.append(puzzline)
         except:
