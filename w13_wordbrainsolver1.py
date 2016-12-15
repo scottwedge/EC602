@@ -1,4 +1,11 @@
-#Howard Zeng
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+# AUTHOR John Keisling jfkeis@bu.edu
+# AUTHOR Sigurdur Egill Thorvaldsson sigurdur@bu.edu
+
+w13_wordbrainsolver.py
+"""
 
 import json
 import sys
@@ -37,12 +44,10 @@ def createTrie(iDictionaryFile):
     global FILE
     global DIC
     global PRE_DIC
-    #global POSITION
 
     FILE = iDictionaryFile
     DIC = []
     PRE_DIC = Trie()
-    #POSITION = '-'
 
     with open(FILE) as f:
         lines = f.readlines()
@@ -118,11 +123,81 @@ def traverse(solution, grid, x, y, remain, row, col, wrd, stp, branch):
     checkSol = traverse(solution, grid, x - 1, y + 1, remain, row, col, wrd, newSteps, branch)
     solAppend(checkSol, solution)
 
-if __name__ == "__main__":
-
-    inputFile = sys.argv[2]
+def win(inputFile):
 
     createTrie(inputFile)
+
+    letters = []
+    for i in range(len(all_puzzles[puz]['grid'])):
+        letters.append(all_puzzles[puz]['grid'][i])
+    
+    let = [[y for y in x] for x in [x for x in all_puzzles[puz]['grid']]]
+    l = np.array(let)
+    l = np.rot90(l)
+    l = np.flipud(l) 
+    
+    grid = []
+    for r in range(len(l)):
+        grid.append(l[r])
+        
+    rows = len(grid)
+    cols = len(grid[0])
+    size = all_puzzles[puz]['size']
+    
+    if(size != rows and size != cols):
+        print("Error size conflict")
+    
+    wordLens = [int(x) for x in all_puzzles[puz]['lengths']]
+    ansWords = len(wordLens)
+
+    if len(wordLens) != ansWords:
+        print("Error incorrect number of words")
+    
+    solPool = [[grid,[]]]
+
+    xCounter = 0
+    yCounter = 1
+    gridCounter = 0
+    wordCounter = 1
+    stepCounter = 2
+
+    for runs in range(ansWords):
+        posSol2 = []
+        for ans in solPool:
+            posSol1 = []
+            for r in range(rows):
+                for c in range(cols):
+                    solution = traverse(posSol1, ans[gridCounter], r, c, wordLens[runs], rows, cols, "", [], PRE_DIC)
+                    if solution:
+                        posSol1.append(solution)
+
+            for posSol in posSol1:
+                tempList = list(ans[wordCounter])
+                tempList.append(posSol[wordCounter])
+                
+                nextGrid = []
+                for row in range(rows):
+                    tempRow = list(posSol[gridCounter][row])
+                    nextGrid.append(tempRow)
+                
+                for stepTaken in posSol[stepCounter]:
+                    x = stepTaken[xCounter]
+                    y = stepTaken[yCounter]
+                    nextGrid[x][y] = POSITION
+
+                applyGravity(nextGrid, rows, cols)
+                posSol2.append([nextGrid, tempList])
+        
+        solPool = posSol2
+
+    solPool.sort()
+    finalAns = []
+    for ans in solPool:
+        if ans[wordCounter] not in finalAns:
+            finalAns.append(ans[wordCounter])
+    return finalAns
+
+if __name__ == "__main__":
 
     while True:
         inline = input("")    
@@ -131,77 +206,14 @@ if __name__ == "__main__":
             all_puzzles.append(puzzline)
         except:
             break
-    
+
     for puz in range(len(all_puzzles)):
-        letters = []
-        for i in range(len(all_puzzles[puz]['grid'])):
-            letters.append(all_puzzles[puz]['grid'][i])
-        
-        let = [[y for y in x] for x in [x for x in all_puzzles[puz]['grid']]]
-        l = np.array(let)
-        l = np.rot90(l)
-        l = np.flipud(l) 
-        
-        grid = []
-        for r in range(len(l)):
-            grid.append(l[r])
-            
-        rows = len(grid)
-        cols = len(grid[0])
-        size = all_puzzles[puz]['size']
-        
-        if(size != rows and size != cols):
-            print("Error size conflict")
-        
-        wordLens = [int(x) for x in all_puzzles[puz]['lengths']]
-        ansWords = len(wordLens)
+        answer = win(sys.argv[1])
 
-        if len(wordLens) != ansWords:
-            print("Error incorrect number of words")
-        
-        solPool = [[grid,[]]]
+        if (len(answer) == 0):
+            answer = win(sys.argv[2])
 
-        xCounter = 0
-        yCounter = 1
-        gridCounter = 0
-        wordCounter = 1
-        stepCounter = 2
-
-        for runs in range(ansWords):
-            posSol2 = []
-            for ans in solPool:
-                posSol1 = []
-                for r in range(rows):
-                    for c in range(cols):
-                        solution = traverse(posSol1, ans[gridCounter], r, c, wordLens[runs], rows, cols, "", [], PRE_DIC)
-                        if solution:
-                            posSol1.append(solution)
-
-                for posSol in posSol1:
-                    tempList = list(ans[wordCounter])
-                    tempList.append(posSol[wordCounter])
-                    
-                    nextGrid = []
-                    for row in range(rows):
-                        tempRow = list(posSol[gridCounter][row])
-                        nextGrid.append(tempRow)
-                    
-                    for stepTaken in posSol[stepCounter]:
-                        x = stepTaken[xCounter]
-                        y = stepTaken[yCounter]
-                        nextGrid[x][y] = POSITION
-
-                    applyGravity(nextGrid, rows, cols)
-                    posSol2.append([nextGrid, tempList])
-            
-            solPool = posSol2
-
-        solPool.sort()
-        finalAns = []
-        for ans in solPool:
-            if ans[wordCounter] not in finalAns:
-                finalAns.append(ans[wordCounter])
-        for i in finalAns:
+        for i in answer:
             for j in i:
                 print(j, end=" ")
             print("")
