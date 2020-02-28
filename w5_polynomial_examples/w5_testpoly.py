@@ -86,12 +86,12 @@ class PolynomialTestCase(unittest.TestCase):
 
     def test_eval(self):
         p99 = Polynomial([1,1,1])
-        self.asssertEqual(p99.eval(3), 13) 
+        self.assertEqual(p99.eval(3), 13) 
    
-        
     def test_eval(self):
         p9 = Polynomial([1,2,3])
-        self.asssertEqual(p9.eval(3),18) 
+        self.assertEqual(p9.eval(3),18) 
+
     def test_mult(self):
         p5 = Polynomial([1,2,3, 0, 5])
         p6 = Polynomial([3,0,2])        

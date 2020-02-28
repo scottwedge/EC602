@@ -96,11 +96,11 @@ class PolynomialTestCase(unittest.TestCase):
     
     def test_eval(self):
         p9 = Polynomial([1,2,3])
-        self.asssertEqual(p9.eval(3),18)     
+        self.assertEqual(p9.eval(3),18)     
         
     def test_eval(self):
         p9 = Polynomial([1,2,3])
-        self.asssertEqual(p9.eval(3),18) 
+        self.assertEqual(p9.eval(3),18) 
 <<<<<<< HEAD
 =======
 
